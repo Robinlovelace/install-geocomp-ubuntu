@@ -84,7 +84,7 @@ echo "start R and install commonly used packages"
 # Make an R script file to use in a moment...
 LOADSTUFF="options(repos=structure(c(CRAN='http://cran.rstudio.com/')))
 update.packages(checkBuilt = TRUE, ask = FALSE)
-packages <- c('Rcpp', 'devtools', 'knitr', 'ggplot2', 'tidyverse') 
+packages <- c('devtools', 'knitr', 'tidyverse') 
 install.packages(packages)
 # and some from github
 
