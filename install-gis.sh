@@ -16,7 +16,6 @@ sudo apt-get update
 sudo apt install josm
 sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev libproj-dev libgeos++-dev
 
-
 # install R/RStudio - see
 # http://stackoverflow.com/questions/29667330
 echo "install a few dependancies for our workflow"
@@ -85,11 +84,9 @@ echo "start R and install commonly used packages"
 # Make an R script file to use in a moment...
 LOADSTUFF="options(repos=structure(c(CRAN='http://cran.rstudio.com/')))
 update.packages(checkBuilt = TRUE, ask = FALSE)
-packages <- c('codetools', 'Rcpp', 'devtools', 'knitr', 'ggplot2',  'plyr', 'dplyr', 'XML', 'RCurl', 'readxl', 'tidyr') 
-# just some of my most often used ones
+packages <- c('Rcpp', 'devtools', 'knitr', 'ggplot2', 'tidyverse') 
 install.packages(packages)
 # and some from github
-devtools::install_git(c('https://github.com/rstudio/rmarkdown.git',  'https://github.com/hadley/reshape'))" # close the R script
 
 # put that R code into an R script file
 FILENAME1="loadstuff.r"
