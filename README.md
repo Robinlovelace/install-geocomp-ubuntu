@@ -37,6 +37,8 @@ git clone git@github.com:robinlovelace/install-gis-ubuntu/
 install-gis-ubuntu/install-gis.sh
 ```
 
+This is just a starter for 10. If you find it useful, please fork it and push any useful updates back to this repo or make and issue if anything goes wrong.
+
 ## Alternative projects
 
 - [ubuntu-post-install](https://github.com/snwh/ubuntu-post-install)
