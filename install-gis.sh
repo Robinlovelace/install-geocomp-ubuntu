@@ -86,6 +86,7 @@ LOADSTUFF="options(repos=structure(c(CRAN='http://cran.rstudio.com/')))
 update.packages(checkBuilt = TRUE, ask = FALSE)
 packages <- c('devtools', # for easy package development and installation from github
               'knitr',    # for dynamic documents
+              'roxygen2',  # for installing sf
               'tidyverse' # stack of packages from Hadley Wickham and friends
               ) 
 install.packages(packages)
