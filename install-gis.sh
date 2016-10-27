@@ -40,7 +40,7 @@ sudo apt-get install gedit -y
 sudo apt-get install jags -y
 sudo apt-get install imagemagick -y
 sudo apt-get install docker-engine -y
-
+sudo apt-get install libv8-dev -y
 
 echo "edit the sources file to prepare to install R"
 # see http://cran.r-project.org/bin/linux/ubuntu/README
@@ -84,9 +84,27 @@ echo "start R and install commonly used packages"
 # Make an R script file to use in a moment...
 LOADSTUFF="options(repos=structure(c(CRAN='http://cran.rstudio.com/')))
 update.packages(checkBuilt = TRUE, ask = FALSE)
-packages <- c('devtools', 'knitr', 'tidyverse') 
+packages <- c('devtools', # for easy package development and installation from github
+              'knitr',    # for dynamic documents
+              'tidyverse' # stack of packages from Hadley Wickham and friends
+              ) 
 install.packages(packages)
+geopkgs = c(
+  "sp",       # spatial data classes and functions
+  "rgdal",    # spatial data I/O
+  "rgeos",    # spatial manipulation
+  "sf",       # newschool spatial data classes + functions
+  "tmap",     # powerful and flexible mapping package
+  "mapview",  # a quick way to create interactive maps (depends on leaflet)
+  "shiny",    # for converting your maps into online applications
+  "OpenStreetMap", # for downloading OpenStreetMap tiles 
+  "rasterVis",# raster visualisation (depends on the raster package)
+  "geojsonio",# for reading/writing geojson files
+  "rmapshaper", # access to the mapshaper JavaScript library from R
+  "stplanr"   # some functions from transport planning
+)
 # and some from github
+devtools::install_github(c('rstudio/leaflet'))"
 
 # put that R code into an R script file
 FILENAME1="loadstuff.r"
