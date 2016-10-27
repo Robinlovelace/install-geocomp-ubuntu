@@ -80,7 +80,6 @@ URL=$(wget -q -O -  http://www.rstudio.org/download/daily/desktop/ubuntu32 | gre
 FILE=`mktemp`; sudo wget "$URL" -qO $FILE && sudo dpkg -i $FILE; rm $FILE
 fi
 
-
 echo "start R and install commonly used packages"
 # http://stackoverflow.com/q/4090169/1036500
 # Make an R script file to use in a moment...
