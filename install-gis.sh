@@ -55,7 +55,7 @@ sudo apt-get install r-base  -y
 sudo apt-get install r-base-dev -y
 sudo apt-get install r-cran-xml  -y
 sudo apt-get install r-cran-rjava -y
-sudo R CMD javareconf # for rJava
+# sudo R CMD javareconf # for rJava
 
 echo "install RStudio from the web"
 # use daily build to get rmarkdown & latest goodies
