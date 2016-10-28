@@ -2,6 +2,7 @@
 
 # install non-gis specific tools
 sudo apt-get install guake # guake for retro bash shell dropdown
+sudo apt-get install texlive-extra-utils
 sudo apt-get install software-properties-common # to ease adding new ppas
 
 # from:  https://medium.com/@ramiroaznar/how-to-install-the-most-common-open-source-gis-applications-on-ubuntu-dbe9d612347b
@@ -104,6 +105,7 @@ geopkgs = c(
   "rmapshaper", # access to the mapshaper JavaScript library from R
   "stplanr"   # some functions from transport planning
 )
+install.packages(geopkgs)
 # and some from github
 devtools::install_github(c('rstudio/leaflet'))"
 
