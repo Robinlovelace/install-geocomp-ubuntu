@@ -91,6 +91,8 @@ packages <- c('devtools', # for easy package development and installation from g
               'tidyverse' # stack of packages from Hadley Wickham and friends
               ) 
 install.packages(packages)
+# some from github
+devtools::install_github(c('rstudio/leaflet'))
 geopkgs = c(
   "sp",       # spatial data classes and functions
   "rgdal",    # spatial data I/O
@@ -105,9 +107,7 @@ geopkgs = c(
   "rmapshaper", # access to the mapshaper JavaScript library from R
   "stplanr"   # some functions from transport planning
 )
-install.packages(geopkgs)
-# and some from github
-devtools::install_github(c('rstudio/leaflet'))"
+install.packages(geopkgs)"
 
 # put that R code into an R script file
 FILENAME1="loadstuff.r"
