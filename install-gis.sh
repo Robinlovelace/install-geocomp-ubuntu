@@ -132,7 +132,7 @@ rm /tmp/loadstuff.sh
 ############################################
 git clone https://github.com/darribas/gds_env.git
 cd gds_env
-wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh
 chmod +x miniconda.sh
 ./miniconda.sh -b -p ./miniconda
 export PATH=`pwd`/miniconda/bin:$PATH
