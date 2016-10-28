@@ -127,6 +127,19 @@ sh /tmp/loadstuff.sh
 # clean up by deleting the temp file
 rm /tmp/loadstuff.sh 
 
+############################################
+### Python Geographic Data Science Stack ###
+############################################
+git clone https://github.com/darribas/gds_env.git
+cd gds_env
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh
+chmod +x miniconda.sh
+./miniconda.sh -b -p ./miniconda
+export PATH=`pwd`/miniconda/bin:$PATH
+conda update --yes conda
+conda install --yes psutil yaml pyyaml
+conda-env create -f install_gds_stack.yml
+
 # more non GIS but programming stuff
 sudo add-apt-repository ppa:neovim-ppa/unstable # nvim: new version of vim
 sudo apt-get update # see https://github.com/neovim/neovim/wiki/Installing-Neovim
