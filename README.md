@@ -76,7 +76,7 @@ import geopandas
 You can also use the IPython notebook, as described in [Python's documentation](http://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/execute.html
 ).
 
-For more, see a tutorial, such as this one on [shapely from PySAL](https://pysal.readthedocs.io/en/latest/users/tutorials/shapely.html).
+For more, check out up-to-date tutorials, such as this one on [GeoPandas](http://geopandas.org/).
 
 ## Note
 
