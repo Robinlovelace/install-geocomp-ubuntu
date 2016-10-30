@@ -152,4 +152,5 @@ sudo curl -L http://install.ohmyz.sh | sh
 # done.
 echo "all done"
 echo "type 'sudo rstudio' in the terminal to start RStudio"
+echo "type source activate gds_test before running Python in bash"
 
