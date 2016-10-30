@@ -140,14 +140,14 @@ conda update --yes conda
 conda install --yes psutil yaml pyyaml
 conda-env create -f install_gds_stack.yml
 
-# more non GIS but programming stuff
-sudo add-apt-repository ppa:neovim-ppa/unstable # nvim: new version of vim
-sudo apt-get update # see https://github.com/neovim/neovim/wiki/Installing-Neovim
-sudo apt-get install neovim
-sudo apt-get install zsh # nice evolution of bash
-sudo apt-get install git-core # from https://www.thinkingmedia.ca/2014/10/how-to-install-oh-my-zsh-on-ubuntu-14/
-Now you can install Oh My Zsh.
-sudo curl -L http://install.ohmyz.sh | sh
+# more non GIS but programming stuff - optional, add your own stuff here
+# sudo add-apt-repository ppa:neovim-ppa/unstable # nvim: new version of vim
+# sudo apt-get update # see https://github.com/neovim/neovim/wiki/Installing-Neovim
+# sudo apt-get install neovim
+# sudo apt-get install zsh # nice evolution of bash
+# sudo apt-get install git-core # from https://www.thinkingmedia.ca/2014/10/how-to-install-oh-my-zsh-on-ubuntu-14/
+# Now you can install Oh My Zsh.
+# sudo curl -L http://install.ohmyz.sh | sh
 
 # done.
 echo "all done"
