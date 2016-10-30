@@ -37,6 +37,47 @@ git clone git@github.com:robinlovelace/install-gis-ubuntu/
 install-gis-ubuntu/install-gis.sh
 ```
 
+## Getting started
+
+Once you have the software installed, you can run it as follows:
+
+- For QGIS, you can launch it with the usual launcer or from the command line
+
+```
+qgis # run QGIS
+```
+
+See the [QGIS manual](http://docs.qgis.org/2.14/en/docs/index.html)
+
+- For R, you can run R from the bash shell by entering `R`. For beginners, RStudio is recommended, which can be opened from the Ubuntu Dash launcher or from bash with:
+
+```
+rstudio
+```
+
+[This tutorial](https://github.com/Robinlovelace/Creating-maps-in-R) provides a good starting point for working with spatial data in R.
+
+- For Python, you need to activate the gds environment before use. Do this with from bash with: 
+
+```
+source activate gds_test # activate the environment
+python
+>>>
+```
+
+from there you will be in the Python shell. Test if the geographic packages work, e.g. with:
+
+```
+import geopandas
+```
+
+You can also use the IPython notebook, as described in [Python's documentation](http://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/execute.html
+).
+
+For more, see a tutorial, such as this one on [shapely from PySAL](https://pysal.readthedocs.io/en/latest/users/tutorials/shapely.html).
+
+## Note
+
 This is just a starter for 10. If you find it useful, please fork it and push any useful updates back to this repo or make and issue if anything goes wrong.
 
 ## Alternative projects
