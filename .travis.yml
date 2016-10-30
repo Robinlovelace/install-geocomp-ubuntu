@@ -4,4 +4,3 @@ dist: xenial
 
 before_install:
   - ./install-gis.sh
-
