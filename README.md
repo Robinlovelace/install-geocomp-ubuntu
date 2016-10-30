@@ -9,6 +9,8 @@ This is not intended to replace the excellent [OSGeo Live distro](https://live.o
 - **RStudio**, a space-aged editor for **R**
 - Recent versions of **GDAL** and **GEOS** C/C++ libraries
 - A tonne of R packages for working with spatial data
+- A full-fledge Python stack for Geographic Data Science, fully tested over at
+  [`gds_env`](https://github.com/darribas/gds_env).
 
 All this can be a pain to install manually, this script is designed to make your life easier. Any comments/suggestions: welcome
 
