@@ -1,6 +1,6 @@
-language: r
+language: bash
 sudo: true
 dist: xenial
 
-before_install:
-  - ./install-gis.sh
+script:
+  - bash install-gis.sh
