@@ -1,6 +1,6 @@
 # install-gis-ubuntu
 
-[![Build Status](https://travis-ci.org/Robinlovelace/install-gis-ubuntu.svg?branch=master)](htpps://travis-ci.org/Robinlovelace/install-gis-ubuntu)
+[![Build Status](https://travis-ci.org/Robinlovelace/install-gis-ubuntu.svg?branch=master)](https://travis-ci.org/Robinlovelace/install-gis-ubuntu)
 
 Inspired by a post on [installing commonly needed GIS software on Ubuntu](https://medium.com/@ramiroaznar/how-to-install-the-most-common-open-source-gis-applications-on-ubuntu-dbe9d612347b) and having recently got a new computer (well, a second hand [Lenovo laptop](http://www.ebay.co.uk/sch/PC-Laptops-Netbooks/177/i.html?_from=R40&_nkw=lenovo&_dcat=177&rt=nc&_mPrRngCbx=1&_udlo=0&_udhi=200)) with Ubuntu freshly installed, I decided to make the process of installing GIS software on it as reproducible as possible.
 
