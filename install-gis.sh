@@ -15,9 +15,15 @@ echo deb https://josm.openstreetmap.de/apt alldist universe | sudo tee /etc/apt/
 wget -q https://josm.openstreetmap.de/josm-apt.key -O- | sudo apt-key add -
 sudo apt-get update
 sudo apt install josm
-#sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev libproj-dev libgeos++-dev
 sudo apt-get install -y libproj-dev libgeos++-dev
-sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev 
+# install gdal
+FLAV=$(eval echo `lsb_release -c` | rev | cut -d ' ' -f1 | rev) 
+if [ $FLAV = "xenial" ]; then
+  sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev 
+  else
+  bash install-gdal.sh
+fi
+
 
 # install R/RStudio - see
 # http://stackoverflow.com/questions/29667330
