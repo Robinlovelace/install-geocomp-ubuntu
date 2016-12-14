@@ -4,13 +4,22 @@
 sudo apt-get install guake # guake for retro bash shell dropdown
 sudo apt-get install texlive-extra-utils
 sudo apt-get install software-properties-common # to ease adding new ppas
+sudo apt-get install libudunits2-dev # udunits2
 
 # from:  https://medium.com/@ramiroaznar/how-to-install-the-most-common-open-source-gis-applications-on-ubuntu-dbe9d612347b
 # add repos
 sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
 sudo apt-get install -y postgresql postgresql-contrib
-sudo apt-get install qgis python-qgis qgis-plugin-grass
+
+# qgis - from http://gis.stackexchange.com/questions/133033/
+sudo sh -c 'echo "deb http://qgis.org/debian xenial main" >> /etc/apt/sources.list'  
+sudo sh -c 'echo "deb-src http://qgis.org/debian xenial main " >> /etc/apt/sources.list'  
+wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import
+gpg --fingerprint 073D307A618E5811
+gpg --export --armor 073D307A618E5811 | sudo apt-key add -
+sudo apt-get update && sudo apt-get install qgis python-qgis  
+
 echo deb https://josm.openstreetmap.de/apt alldist universe | sudo tee /etc/apt/sources.list.d/josm.list > /dev/null
 wget -q https://josm.openstreetmap.de/josm-apt.key -O- | sudo apt-key add -
 sudo apt-get update
@@ -97,23 +106,23 @@ packages <- c('devtools', # for easy package development and installation from g
               'knitr',    # for dynamic documents
               'roxygen2',  # for installing sf
               'tidyverse' # stack of packages from Hadley Wickham and friends
-              ) 
+              )
 install.packages(packages)
 # some from github
 devtools::install_github(c('rstudio/leaflet'))
 geopkgs = c(
-  "sp",       # spatial data classes and functions
-  "rgdal",    # spatial data I/O
-  "rgeos",    # spatial manipulation
-  "sf",       # newschool spatial data classes + functions
-  "tmap",     # powerful and flexible mapping package
-  "mapview",  # a quick way to create interactive maps (depends on leaflet)
-  "shiny",    # for converting your maps into online applications
-  "OpenStreetMap", # for downloading OpenStreetMap tiles 
-  "rasterVis",# raster visualisation (depends on the raster package)
-  "geojsonio",# for reading/writing geojson files
-  "rmapshaper", # access to the mapshaper JavaScript library from R
-  "stplanr"   # some functions from transport planning
+  'sp',       # spatial data classes and functions
+  'rgdal',    # spatial data I/O
+  'rgeos',    # spatial manipulation
+  'sf',       # newschool spatial data classes + functions
+  'tmap',     # powerful and flexible mapping package
+  'mapview',  # a quick way to create interactive maps (depends on leaflet)
+  'shiny',    # for converting your maps into online applications
+  'OpenStreetMap', # for downloading OpenStreetMap tiles
+  'rasterVis',# raster visualisation (depends on the raster package)
+  'geojsonio',# for reading/writing geojson files
+  'rmapshaper', # access to the mapshaper JavaScript library from R
+  'stplanr'   # some functions from transport planning
 )
 install.packages(geopkgs)"
 
@@ -123,7 +132,7 @@ sudo echo "$LOADSTUFF" > /tmp/$FILENAME1
 
 # Make a shell file that contains instructions in bash for running that R script file
 # from the command line. There may be a simpler way, but nothing I tried worked.
-NEWBASH='#!/usr/bin/env 
+NEWBASH='#!/usr/bin/env
 sudo Rscript /tmp/loadstuff.r'
 FILENAME2="loadstuff.sh"
 
@@ -133,7 +142,7 @@ sudo echo "$NEWBASH" > /tmp/$FILENAME2
 # run the bash file to exectute the R code and install the packages
 sh /tmp/loadstuff.sh
 # clean up by deleting the temp file
-rm /tmp/loadstuff.sh 
+rm /tmp/loadstuff.sh
 
 ############################################
 ### Python Geographic Data Science Stack ###
@@ -149,16 +158,16 @@ conda install --yes psutil yaml pyyaml
 conda-env create -f install_gds_stack.yml
 
 # more non GIS but programming stuff - optional, add your own stuff here
-# sudo add-apt-repository ppa:neovim-ppa/unstable # nvim: new version of vim
-# sudo apt-get update # see https://github.com/neovim/neovim/wiki/Installing-Neovim
-# sudo apt-get install neovim
-# sudo apt-get install zsh # nice evolution of bash
-# sudo apt-get install git-core # from https://www.thinkingmedia.ca/2014/10/how-to-install-oh-my-zsh-on-ubuntu-14/
-# Now you can install Oh My Zsh.
-# sudo curl -L http://install.ohmyz.sh | sh
+sudo add-apt-repository ppa:neovim-ppa/unstable # nvim: new version of vim
+sudo apt-get update # see https://github.com/neovim/neovim/wiki/Installing-Neovim
+sudo apt-get install neovim
+sudo apt-get install zsh # nice evolution of bash
+sudo apt-get install git-core # from https://www.thinkingmedia.ca/2014/10/how-to-install-oh-my-zsh-on-ubuntu-14/
+Now you can install Oh My Zsh.
+sudo curl -L http://install.ohmyz.sh | sh
 
 # done.
 echo "all done"
-echo "type 'sudo rstudio' in the terminal to start RStudio"
+echo "type 'rstudio' in the terminal to start RStudio"
 echo "type source activate gds_test before running Python in bash"
 
