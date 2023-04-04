@@ -1,6 +1,0 @@
-language: bash
-sudo: true
-dist: xenial
-
-script:
-  - bash install-gis.sh
