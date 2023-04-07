@@ -1,55 +1,43 @@
+---
+format: gfm
+---
 
 # Install tools for geocomputation, research and fun on Ubuntu
 
-Inspired by a post on [installing commonly needed GIS software on
-Ubuntu](https://medium.com/@ramiroaznar/how-to-install-the-most-common-open-source-gis-applications-on-ubuntu-dbe9d612347b)
-and having recently got a new computer (an Entroware Proteus, a bit
-faster than the second hand [Lenovo
-laptop](http://www.ebay.co.uk/sch/PC-Laptops-Netbooks/177/i.html?_from=R40&_nkw=lenovo&_dcat=177&rt=nc&_mPrRngCbx=1&_udlo=0&_udhi=200)
-I was running when I created this repo!) with Ubuntu freshly installed,
-I decided to make the process of installing GIS software on it as
-reproducible as possible.
+Inspired by a post on [installing commonly needed GIS software on Ubuntu](https://medium.com/@ramiroaznar/how-to-install-the-most-common-open-source-gis-applications-on-ubuntu-dbe9d612347b) and having recently got a new computer (an Entroware Proteus, a bit faster than the second hand [Lenovo laptop](http://www.ebay.co.uk/sch/PC-Laptops-Netbooks/177/i.html?_from=R40&_nkw=lenovo&_dcat=177&rt=nc&_mPrRngCbx=1&_udlo=0&_udhi=200) I was running when I created this repo!) with Ubuntu freshly installed, I decided to make the process of installing GIS software on it as reproducible as possible.
 
-This is not intended to replace the excellent [OSGeo Live
-distro](https://live.osgeo.org/en/index.html), which contains a ton of
-amazing geo packages. Instead it’s for people who want lean, core GIS
-functionality on their existing Ubuntu machine, with a focus on
-geocomputation and data science.
+This is not intended to replace the excellent [OSGeo Live distro](https://live.osgeo.org/en/index.html), which contains a ton of amazing geo packages.
+Instead it's for people who want lean, core GIS functionality on their existing Ubuntu machine, with a focus on geocomputation and data science.
 
-Rather than providing automated scripts, it simply provides the bash
-commands here in the README for you to copy, paste (or Ctrl+Shift+Enter
-if in RStudio if you download this README, a great shortcut) Core
-programs it shows how to install are:
+Rather than providing automated scripts, it simply provides the bash commands here in the README for you to copy, paste (or Ctrl+Shift+Enter if in RStudio if you download this README, a great shortcut)
+Core programs it shows how to install are:
 
-- **R** with access to pre-compiled packages, a powerhouse for
-  statistical computing
+- **R** with access to pre-compiled packages, a powerhouse for statistical computing
 - **RStudio**, a space-aged editor for **R**
 - **QGIS**, probably the most popular GUI-driven GIS in the world
 - Recent versions of **GDAL** and **GEOS** C/C++ libraries
 - R packages for working with spatial data
-- A Python stack for Geographic Data Science
+- A  Python stack for Geographic Data Science 
 - Rust, an upcoming systems language with impressive geo libs
 - Docker, which gives ultimate power and flexibility
 
-All this can be a pain to install manually. The commands below are
-designed to make your life easier. Any comments/suggestions: welcome
+All this can be a pain to install manually.
+The commands below are designed to make your life easier. 
+Any comments/suggestions: welcome
 
 ## Prerequisites
 
-- A working installation of Ubuntu 22.04, ‘Jammy Jellyfish’ on a
-  computer you have access to
+- A working installation of Ubuntu 22.04, 'Jammy Jellyfish' on a computer you have access to
 
 # Install key packages
 
-Fire up a terminal, e.g. with `Ctl-Alt-T` after booting Ubuntu, then
-enter the following.
+Fire up a terminal, e.g. with `Ctl-Alt-T` after booting Ubuntu, then enter the following.
 
 ## R and RStudio
 
-From
-https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/
+From https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/
 
-``` bash
+```bash
 sudo apt update
 sudo apt upgrade
 sudo apt install -y --no-install-recommends software-properties-common dirmngr
@@ -66,7 +54,7 @@ sudo add-apt-repository ppa:c2d4u.team/c2d4u4.0+
 
 ### Rapid install of R packages
 
-``` bash
+```bash
 # My own selection among 5000...
 sudo apt install -y r-cran-rgl r-cran-rjags r-cran-snow r-cran-ggplot2 r-cran-igraph r-cran-lme4 r-cran-rjava r-cran-devtools r-cran-roxygen2 r-cran-rjava
 sudo apt install r-cran-tidyverse
@@ -82,7 +70,7 @@ sudo apt install r-cran-sf r-cran-terra r-cran-mapedit r-cran-tmap r-cran-mapdec
 
 RStudio: https://www.entroware.com/store/proteus
 
-``` bash
+```bash
 wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2023.03.0-386-amd64.deb
 sudo dpkg -i rstudio*
 rm -v rstudio*
@@ -92,7 +80,7 @@ rm -v rstudio*
 
 From: https://github.com/geocompx/docker/blob/master/qgis/Dockerfile
 
-``` bash
+```bash
 apt-get update && apt-get -y --with-new-pkgs upgrade
 # how to install LTR, latest or nightly QGIS version, see:
 # https://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu
@@ -155,53 +143,47 @@ Rscript -e "remotes::install_github('r-spatial/qgisprocess')"
 
 Once you have the software installed, you can run it as follows:
 
-- For QGIS, you can launch it with the usual launcher or from the
-  command line
+- For QGIS, you can launch it with the usual launcher or from the command line
 
-<!-- -->
-
-    qgis # run QGIS
+```
+qgis # run QGIS
+```
 
 See the [QGIS manual](https://docs.qgis.org/latest/en/docs/index.html)
 
-- For R, you can run R from the bash shell by entering `R`. For
-  beginners, RStudio is recommended, which can be opened from the Ubuntu
-  Dash launcher or from bash with:
+- For R, you can run R from the bash shell by entering `R`. For beginners, RStudio is recommended, which can be opened from the Ubuntu Dash launcher or from bash with:
 
-<!-- -->
+```
+rstudio
+```
 
-    rstudio
+[This tutorial](https://github.com/Robinlovelace/Creating-maps-in-R) provides a good starting point for working with spatial data in R.
 
-[This tutorial](https://github.com/Robinlovelace/Creating-maps-in-R)
-provides a good starting point for working with spatial data in R.
+- For Python, you need to activate the gds environment before use. Do this with from bash with: 
 
-- For Python, you need to activate the gds environment before use. Do
-  this with from bash with:
+```
+source activate gds_test # activate the environment
+python
+>>>
+```
 
-<!-- -->
+from there you will be in the Python shell. Test if the geographic packages work, e.g. with:
 
-    source activate gds_test # activate the environment
-    python
-    >>>
+```
+import geopandas
+```
 
-from there you will be in the Python shell. Test if the geographic
-packages work, e.g. with:
+You can also use the IPython notebook, as described in [Python's documentation](http://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/execute.html
+).
 
-    import geopandas
-
-You can also use the IPython notebook, as described in [Python’s
-documentation](http://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/execute.html).
-
-For more, check out up-to-date tutorials, such as this one on
-[GeoPandas](http://geopandas.org/).
+For more, check out up-to-date tutorials, such as this one on [GeoPandas](http://geopandas.org/).
 
 ## Note
 
-This is just a starter for 10. If you find it useful, please fork it and
-push any useful updates back to this repo or make and issue if anything
-goes wrong.
+This is just a starter for 10. If you find it useful, please fork it and push any useful updates back to this repo or make and issue if anything goes wrong.
 
 ## Alternative projects
 
 - [ubuntu-post-install](https://github.com/snwh/ubuntu-post-install)
 - [install-tl-ubuntu](https://github.com/scottkosty/install-tl-ubuntu)
+
