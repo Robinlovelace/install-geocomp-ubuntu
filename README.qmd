@@ -59,6 +59,15 @@ cd install-geocomp-ubuntu
 less README.md
 ```
 
+### Setting up Git
+
+Setup git with the following commands
+
+```bash
+git config --global user.email "david@tilia.org.uk"
+git config --global user.name "trachelium"
+```
+
 ## R and RStudio
 
 From https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/
@@ -100,6 +109,28 @@ RStudio: https://www.entroware.com/store/proteus
 wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2023.03.0-386-amd64.deb
 sudo dpkg -i rstudio*
 rm -v rstudio*
+```
+
+After installing RStudio you can open it by pressing the 'Windows button' and they typing RStudio.
+You should also be able to open it with the following command in the terminal:
+
+```bash
+rstudio
+```
+
+After opening RStudio you can open the folder containing these instructions, or any folder, with the following command typed into the R console.
+
+```{r, eval=FALSE}
+rstudioapi::openProject("~/github/trachelium/install-geocomp-ubuntu/")
+```
+
+Also in RStudio you can commit and push changes to this or any repo as follows, starting by opening a terminal by clicking on the Terminal button or by typing the shortcut: `Alt+Shift+M`.
+You can also execute lines of code from the source editor in RStudio in the terminal by typing `Ctrl+Alt+Enter`, which will send the current line of code to the terminal.
+
+```bash
+git status
+git commit -am 'Update instructions with info on using RStudio'
+
 ```
 
 ## QGIS
