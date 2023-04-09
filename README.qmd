@@ -276,16 +276,6 @@ If you see something like this, congratulations, you can develop almost anything
 
 ![](vscode-devcontainer.png)
 
-## AppImage Launcher
-
-Intuitive and time-saving management of AppImages.
-
-```bash
-sudo add-apt-repository ppa:appimagelauncher-team/stable
-sudo apt update
-sudo apt install appimagelauncher
-```
-
 
 # Getting started with tools for geocomputation
 
@@ -328,6 +318,55 @@ For more, check out up-to-date tutorials, such as this one on [GeoPandas](http:/
 
 # Other tools for boosting productivity and developer experience
 
+## AppImage Launcher
+
+Intuitive and time-saving management of AppImages.
+
+```bash
+sudo add-apt-repository ppa:appimagelauncher-team/stable
+sudo apt update
+sudo apt install appimagelauncher
+```
+
+## LogSeq
+
+LogSeq is an application for storing notes, todo lists, and more.
+To install it just click on the latest '.AppImage' file in the latest releases, download it, and it should be integrated by AppImage Launcher: https://github.com/logseq/logseq/releases
+
+## Zotero
+
+```bash
+wget -O zotero.tar.bz2 'https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64'
+tar -xjf zotero.tar.bz2 -C ~/Downloads/
+sudo mv ~/Downloads/Zotero_linux-x86_64 /opt/Zotero
+sudo ln -s /opt/Zotero/zotero /usr/local/bin/
+sudo apt-get install libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
+```
+
+Run Zotero with:
+
+```bash
+zotero
+```
+
+### Make Zotero available to the launcher
+
+```bash
+cd /usr/share/applications
+sudo bash -c 'echo "[Desktop Entry]
+Version=1.0
+Name=Zotero
+GenericName=Reference Manager
+Comment=Zotero Reference Manager
+Exec=/opt/Zotero/zotero %U
+Terminal=false
+Type=Application
+Icon=/opt/Zotero/chrome/icons/default/default256.png
+Categories=Office;" > zotero.desktop'
+sudo chmod +x zotero.desktop
+cd -
+```
+
 ## ddterm
 
 ddterm is top down terminal: https://github.com/ddterm/gnome-shell-extension-ddterm
@@ -342,6 +381,26 @@ wget https://github.com/ddterm/gnome-shell-extension-ddterm/releases/download/v4
 gnome-extensions install -f ~/Downloads/ddterm@amezin.github.com.shell-extension.zip
 sudo reboot # you may need to reboot the computer to use it
 gnome-extensions enable ddterm@amezin.github.com 
+```
+
+## Signal
+
+Signal is an app for messaging and more.
+
+```bash
+# NOTE: These instructions only work for 64 bit Debian-based
+# Linux distributions such as Ubuntu, Mint etc.
+
+# 1. Install our official public software signing key
+wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signal-desktop-keyring.gpg
+cat signal-desktop-keyring.gpg | sudo tee -a /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
+
+# 2. Add our repository to your list of repositories
+echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\
+  sudo tee -a /etc/apt/sources.list.d/signal-xenial.list
+
+# 3. Update your package database and install signal
+sudo apt update && sudo apt install signal-desktop
 ```
 
 
