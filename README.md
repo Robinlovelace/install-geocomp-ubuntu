@@ -73,6 +73,15 @@ cd install-geocomp-ubuntu
 less README.md
 ```
 
+### Setting up Git
+
+Setup git with the following commands
+
+``` bash
+git config --global user.email "david@tilia.org.uk"
+git config --global user.name "trachelium"
+```
+
 ## R and RStudio
 
 From
@@ -107,6 +116,7 @@ sudo apt install -y libglu1-mesa-dev freeglut3-dev mesa-common-dev
 sudo apt install -y libmagick++-dev libjq-dev libv8-dev libprotobuf-dev protobuf-compiler libsodium-dev imagemagick libgit2-dev
 # rspatial
 sudo apt install r-cran-sf r-cran-terra r-cran-mapedit r-cran-tmap r-cran-mapdeck r-cran-shinyjs 
+Rscript -e 'install.packages("languageserver")'
 ```
 
 RStudio: https://www.entroware.com/store/proteus
@@ -117,79 +127,32 @@ sudo dpkg -i rstudio*
 rm -v rstudio*
 ```
 
-## QGIS
-
-From: https://github.com/geocompx/docker/blob/master/qgis/Dockerfile
+After installing RStudio you can open it by pressing the ‘Windows
+button’ and they typing RStudio. You should also be able to open it with
+the following command in the terminal:
 
 ``` bash
-apt-get update && apt-get -y --with-new-pkgs upgrade
-# how to install LTR, latest or nightly QGIS version, see:
-# https://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu
-sudo apt-get -y install gnupg software-properties-common python3-pip
-sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
-sudo wget -O /etc/apt/keyrings/qgis-archive-keyring.gpg https://download.qgis.org/downloads/qgis-archive-keyring.gpg
-# here, we install the QGIS-LTR, if you like the latest one, change in URIs from ubuntugis-ltr to ubuntugis
-sudo -i
-echo $'Types: deb deb-src \n\
-URIs: https://qgis.org/ubuntugis-ltr\n\
-Suites: jammy\n\
-Architectures: amd64\n\
-Components: main\n\
-Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg' >/etc/apt/sources.list.d/qgis.sources
-# edit file manually
-vim /etc/apt/sources.list.d/qgis.sources
-apt-get update
-# here using apt-get leads 10 packages kept back which in turn prevents the successful installation of qgis, ok, use --with-new-pkgs!
-apt-get -y --with-new-pkgs upgrade && \
-  apt-get -y autoremove && \
-  apt-get -y install qgis qgis-plugin-grass saga
-
-# for how to use the qgis-plugin-manager, see https://github.com/3liz/qgis-plugin-manager
-pip3 install qgis-plugin-manager
-# to enable the qgis-plugin-manager, add the corresponding path to PATH
-# ENV PATH="/home/rstudio/.local/bin:$PATH"
-echo "export PATH=\"/home/rstudio/.local/bin:\$PATH\"" >> /etc/profile
-# from the next line onwards we have trouble with the rstudio server, therefore we switch to the rstudio user
-mkdir -p /home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins
-ENV QGIS_PLUGINPATH=/home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins
-echo 'export QGIS_PLUGINPATH=/home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins' >> /etc/profile
-less /etc/profile
-exit
-qgis-plugin-manager init
-qgis-plugin-manager update
-# install SAGA next generation plugin
-qgis-plugin-manager install 'Processing Saga NextGen Provider'
-# You should see the following:
-# QGIS version : 3.28.5
-# Installation Processing Saga NextGen Provider latest
-#         Ok processing_saga_nextgen.0.0.7.zip
-# Installed with user 'robin'
-# Please check file permissions and owner according to the user running QGIS Server.
-# Tip : Do not forget to restart QGIS Server to reload plugins 😎
-
-# the rest is nice to have but not really necessary
-# qgis_process in a headless state
-# ENV QT_QPA_PLATFORM=offscreen
-
-# enable desired plugins
-# qgis_process plugins enable processing_saga_nextgen
-# qgis_process plugins enable grassprovider
-# USER root
-# install R package qgisprocess from Github (paused due to API limits)
-Rscript -e "install.packages('remotes')" 
-Rscript -e "remotes::install_github('r-spatial/qgisprocess')" 
+rstudio
 ```
 
-## Rust
+After opening RStudio you can open the folder containing these
+instructions, or any folder, with the following command typed into the R
+console.
+
+``` r
+rstudioapi::openProject("~/Download/install-geocomp-ubuntu/")
+```
+
+Also in RStudio you can commit and push changes to this or any repo as
+follows, starting by opening a terminal by clicking on the Terminal
+button or by typing the shortcut: `Alt+Shift+M`. You can also execute
+lines of code from the source editor in RStudio in the terminal by
+typing `Ctrl+Alt+Enter`, which will send the current line of code to the
+terminal.
 
 ``` bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-# Make Rust available:
-source "$HOME/.cargo/env"
-# Try installing a crate:
-cargo install geo
-cargo install geozero
-cargo install zonebuilder
+git status
+git commit -am 'Update instructions with info on using RStudio'
 ```
 
 ## VS Code
@@ -204,6 +167,48 @@ sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/v
 sudo apt update
 sudo apt-get install code
 code --install-extension ms-vscode-remote.remote-containers
+```
+
+### Executing bash commands in VS Code
+
+A great feature of VS Code is that you can execute bash commands in the
+integrated terminal. Open the integrated terminal by typing the
+shortcut: `Ctrl+J`. Open a new terminal in VS code by typing the
+shortcut: `Ctrl+backtick`(\`).
+
+Executing code is made even easier by the Quarto extension for VS Code,
+which can be installed as follows from bash:
+
+``` bash
+code --install-extension quarto.quarto
+```
+
+After that extension has been installed you should be able to execute
+code in the integrated terminal by typing `Ctrl+Enter` in the source
+editor, as shown in the following screenshot:
+
+![](run-cells.png)
+
+### Installing key VS Code extensions
+
+``` bash
+code --install-extension reditorsupport.r
+code --install-extension github.copilot
+```
+
+### Creating documents with Quarto
+
+Install the Quarto command line tool:
+
+``` bash
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.3.313/quarto-1.3.313-linux-amd64.deb -O /tmp/quarto.deb
+sudo dpkg -i /tmp/quarto.deb
+```
+
+Install the Quarto R package:
+
+``` bash
+Rscript -e "remotes::install_github('quarto-dev/quarto-r')"
 ```
 
 VS Code has a nice feature that enables you to develop inside a
@@ -302,14 +307,62 @@ anything in reproducible and easy-to-use devcontainers!
 
 ![](vscode-devcontainer.png)
 
-## AppImage Launcher
+## QGIS
 
-Intuitive and time-saving management of AppImages.
+From: https://github.com/geocompx/docker/blob/master/qgis/Dockerfile
 
 ``` bash
-sudo add-apt-repository ppa:appimagelauncher-team/stable
-sudo apt update
-sudo apt install appimagelauncher
+apt-get update && apt-get -y --with-new-pkgs upgrade
+# how to install LTR, latest or nightly QGIS version, see:
+# https://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu
+sudo apt-get -y install gnupg software-properties-common python3-pip
+sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+sudo wget -O /etc/apt/keyrings/qgis-archive-keyring.gpg https://download.qgis.org/downloads/qgis-archive-keyring.gpg
+# here, we install the QGIS-LTR, if you like the latest one, change in URIs from ubuntugis-ltr to ubuntugis
+sudo -i
+echo $'Types: deb deb-src \n\
+URIs: https://qgis.org/ubuntugis-ltr\n\
+Suites: jammy\n\
+Architectures: amd64\n\
+Components: main\n\
+Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg' >/etc/apt/sources.list.d/qgis.sources
+# edit file manually
+vim /etc/apt/sources.list.d/qgis.sources
+apt-get update
+# here using apt-get leads 10 packages kept back which in turn prevents the successful installation of qgis, ok, use --with-new-pkgs!
+apt-get -y --with-new-pkgs upgrade && \
+  apt-get -y autoremove && \
+  apt-get -y install qgis qgis-plugin-grass saga
+
+# for how to use the qgis-plugin-manager, see https://github.com/3liz/qgis-plugin-manager
+pip3 install qgis-plugin-manager
+# to enable the qgis-plugin-manager, add the corresponding path to PATH
+# ENV PATH="/home/rstudio/.local/bin:$PATH"
+echo "export PATH=\"/home/rstudio/.local/bin:\$PATH\"" >> /etc/profile
+# from the next line onwards we have trouble with the rstudio server, therefore we switch to the rstudio user
+mkdir -p /home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins
+ENV QGIS_PLUGINPATH=/home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins
+echo 'export QGIS_PLUGINPATH=/home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins' >> /etc/profile
+less /etc/profile
+exit
+qgis-plugin-manager init
+qgis-plugin-manager update
+# install SAGA next generation plugin
+qgis-plugin-manager install 'Processing Saga NextGen Provider'
+Rscript -e "install.packages('remotes')" 
+Rscript -e "remotes::install_github('r-spatial/qgisprocess')" 
+```
+
+## Rust
+
+``` bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Make Rust available:
+source "$HOME/.cargo/env"
+# Try installing a crate:
+cargo install geo
+cargo install geozero
+cargo install zonebuilder
 ```
 
 # Getting started with tools for geocomputation
@@ -333,30 +386,86 @@ See the [QGIS manual](https://docs.qgis.org/latest/en/docs/index.html)
 
     rstudio
 
-[This tutorial](https://github.com/Robinlovelace/Creating-maps-in-R)
-provides a good starting point for working with spatial data in R.
-
-- For Python, you need to activate the gds environment before use. Do
-  this with from bash with:
-
-<!-- -->
-
-    source activate gds_test # activate the environment
-    python
-    >>>
-
-from there you will be in the Python shell. Test if the geographic
-packages work, e.g. with:
-
-    import geopandas
-
-You can also use the IPython notebook, as described in [Python’s
-documentation](http://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/execute.html).
-
-For more, check out up-to-date tutorials, such as this one on
-[GeoPandas](http://geopandas.org/).
-
 # Other tools for boosting productivity and developer experience
+
+## CopyQ
+
+``` bash
+sudo add-apt-repository ppa:hluk/copyq
+```
+
+This command adds the PPA maintained by the CopyQ developer Lukas
+Holecek to your system’s software sources. You’ll be prompted to enter
+your password to confirm the command.
+
+Update the package list by running the following command:
+
+``` bash
+sudo apt update
+```
+
+Install CopyQ by running the following command:
+
+``` bash
+sudo apt install copyq
+```
+
+This command installs the latest version of CopyQ and its dependencies
+on your system.
+
+Once the installation is complete, you can launch CopyQ by typing copyq
+in the terminal or by searching for it in the Applications menu.
+
+## AppImage Launcher
+
+Intuitive and time-saving management of AppImages.
+
+``` bash
+sudo add-apt-repository ppa:appimagelauncher-team/stable
+sudo apt update
+sudo apt install appimagelauncher
+```
+
+## LogSeq
+
+LogSeq is an application for storing notes, todo lists, and more. To
+install it just click on the latest ‘.AppImage’ file in the latest
+releases, download it, and it should be integrated by AppImage Launcher:
+https://github.com/logseq/logseq/releases
+
+## Zotero
+
+``` bash
+wget -O zotero.tar.bz2 'https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64'
+tar -xjf zotero.tar.bz2 -C ~/Downloads/
+sudo mv ~/Downloads/Zotero_linux-x86_64 /opt/Zotero
+sudo ln -s /opt/Zotero/zotero /usr/local/bin/
+sudo apt-get install libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
+```
+
+Run Zotero with:
+
+``` bash
+zotero
+```
+
+### Make Zotero available to the launcher
+
+``` bash
+cd /usr/share/applications
+sudo bash -c 'echo "[Desktop Entry]
+Version=1.0
+Name=Zotero
+GenericName=Reference Manager
+Comment=Zotero Reference Manager
+Exec=/opt/Zotero/zotero %U
+Terminal=false
+Type=Application
+Icon=/opt/Zotero/chrome/icons/default/default256.png
+Categories=Office;" > zotero.desktop'
+sudo chmod +x zotero.desktop
+cd -
+```
 
 ## ddterm
 
@@ -377,6 +486,26 @@ wget https://github.com/ddterm/gnome-shell-extension-ddterm/releases/download/v4
 gnome-extensions install -f ~/Downloads/ddterm@amezin.github.com.shell-extension.zip
 sudo reboot # you may need to reboot the computer to use it
 gnome-extensions enable ddterm@amezin.github.com 
+```
+
+## Signal
+
+Signal is an app for messaging and more.
+
+``` bash
+# NOTE: These instructions only work for 64 bit Debian-based
+# Linux distributions such as Ubuntu, Mint etc.
+
+# 1. Install our official public software signing key
+wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signal-desktop-keyring.gpg
+cat signal-desktop-keyring.gpg | sudo tee -a /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
+
+# 2. Add our repository to your list of repositories
+echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\
+  sudo tee -a /etc/apt/sources.list.d/signal-xenial.list
+
+# 3. Update your package database and install signal
+sudo apt update && sudo apt install signal-desktop
 ```
 
 # Alternative projects
