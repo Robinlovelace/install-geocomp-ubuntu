@@ -1,5 +1,50 @@
-
 # Install tools for geocomputation, research and fun on Ubuntu
+
+- [Prerequisites](#prerequisites)
+- [Install key packages](#install-key-packages)
+  - [GitHub’s gh CLI](#githubs-gh-cli)
+    - [Setting up Git](#setting-up-git)
+  - [R and RStudio](#r-and-rstudio)
+    - [Rapid install of R packages](#rapid-install-of-r-packages)
+  - [VS Code](#vs-code)
+    - [Executing bash commands in VS
+      Code](#executing-bash-commands-in-vs-code)
+    - [Installing key VS Code
+      extensions](#installing-key-vs-code-extensions)
+    - [Creating documents with Quarto](#creating-documents-with-quarto)
+  - [Docker](#docker)
+    - [Post installation steps for
+      Docker](#post-installation-steps-for-docker)
+    - [Running devcontainer with VS
+      code](#running-devcontainer-with-vs-code)
+  - [QGIS](#qgis)
+  - [Rust](#rust)
+- [Getting started with tools for
+  geocomputation](#getting-started-with-tools-for-geocomputation)
+- [Other tools for boosting productivity and developer
+  experience](#other-tools-for-boosting-productivity-and-developer-experience)
+  - [Rust command-line utilities](#rust-command-line-utilities)
+    - [ripgrep](#ripgrep)
+    - [fd](#fd)
+    - [sd](#sd)
+    - [exa](#exa)
+    - [dust](#dust)
+  - [CopyQ](#copyq)
+  - [AppImage Launcher](#appimage-launcher)
+  - [LogSeq](#logseq)
+  - [Zotero](#zotero)
+    - [Make Zotero available to the
+      launcher](#make-zotero-available-to-the-launcher)
+  - [ddterm](#ddterm)
+  - [Signal](#signal)
+  - [Flameshot](#flameshot)
+  - [Chrome](#chrome)
+  - [Edge](#edge)
+  - [KmCaster](#kmcaster)
+  - [Syncthing](#syncthing)
+  - [Discord](#discord)
+  - [Slack](#slack)
+- [Alternative projects](#alternative-projects)
 
 Inspired by a post on [installing commonly needed GIS software on
 Ubuntu](https://medium.com/@ramiroaznar/how-to-install-the-most-common-open-source-gis-applications-on-ubuntu-dbe9d612347b)
@@ -8,7 +53,12 @@ faster than the second hand [Lenovo
 laptop](http://www.ebay.co.uk/sch/PC-Laptops-Netbooks/177/i.html?_from=R40&_nkw=lenovo&_dcat=177&rt=nc&_mPrRngCbx=1&_udlo=0&_udhi=200)
 I was running when I created this repo!) with Ubuntu freshly installed,
 I decided to make the process of installing GIS software on it as
-reproducible as possible.
+reproducible as possible. After installing this software your computer
+may look a bit like this:
+
+![](vscode-qgis-editing.png)
+
+Clutter for demo purposes!
 
 This is not intended to replace the excellent [OSGeo Live
 distro](https://live.osgeo.org/en/index.html), which contains a ton of
@@ -26,11 +76,13 @@ programs it shows how to install are:
   statistical computing
 - R packages for working with spatial data
 - **RStudio**, a space-aged editor for **R**
+- VS Code with extensions for R, Python, C/C++, Rust, Docker, and more
+- Docker, which gives ultimate power and flexibility to install and run
+  software
 - **QGIS**, probably the most popular GUI-driven GIS in the world
 - Recent versions of **GDAL** and **GEOS** C/C++ libraries
 - Python packages for Geographic Data Science
 - Rust, an upcoming systems language with impressive geo libs
-- Docker, which gives ultimate power and flexibility
 
 All this can be a pain to install manually. The commands below are
 designed to make your life easier. Any comments/suggestions: welcome
@@ -78,7 +130,7 @@ less README.md
 Setup git with the following commands
 
 ``` bash
-git config --global user.email "david@tilia.org.uk"
+git config --global user.email "test@test.org.uk"
 git config --global user.name "trachelium"
 ```
 
@@ -388,6 +440,62 @@ See the [QGIS manual](https://docs.qgis.org/latest/en/docs/index.html)
 
 # Other tools for boosting productivity and developer experience
 
+## Rust command-line utilities
+
+These are some fast and versatile command-line utilities that provide an
+alternitive to standard Unix tools.
+
+### ripgrep
+
+ripgrep is a line-oriented search tool that recursively searches your
+current directory for a regex pattern. It is similar to other popular
+search tools like The Silver Searcher, ack, and grep.
+
+``` bash
+sudo apt install ripgrep
+rg --help
+```
+
+### fd
+
+fd is a simple, fast and user-friendly alternative to find.
+
+``` bash
+sudo apt install fd-find
+fdfind --help
+```
+
+### sd
+
+[sd](https://github.com/chmln/sd) is a find & replace CLI (command-line
+interface) tool that allows you to perform simple find & replace
+operations on files.
+
+``` bash
+cargo install sd
+sd --help
+```
+
+### exa
+
+exa is a modern replacement for ls. It supports colors, file icons, git
+integration, and more.
+
+``` bash
+cargo install exa
+exa .
+```
+
+### dust
+
+dust is a more intuitive version of du in rust. It provides a better way
+to navigate through your system and view disk usage.
+
+``` bash
+cargo install du-dust
+dust --help
+```
+
 ## CopyQ
 
 ``` bash
@@ -506,6 +614,107 @@ echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] 
 
 # 3. Update your package database and install signal
 sudo apt update && sudo apt install signal-desktop
+```
+
+## Flameshot
+
+Flameshot is a powerful yet simple to use screenshot software.
+
+``` bash
+sudo apt install flameshot
+```
+
+## Chrome
+
+``` bash
+# Add the Google Chrome repository to your system
+echo "Adding Google Chrome repository..."
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+
+# Update your package list
+echo "Updating package list..."
+sudo apt-get update
+
+# Install Google Chrome
+echo "Installing Google Chrome..."
+sudo apt-get install google-chrome-stable -y
+
+echo "Google Chrome installation complete."
+```
+
+## Edge
+
+``` bash
+# Add the Microsoft Edge repository to your system
+echo "Adding Microsoft Edge repository..."
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg
+sudo install -o root -g root -m 644 microsoft.asc.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge-dev.list'
+rm microsoft.asc.gpg
+
+# Update your package list
+echo "Updating package list..."
+sudo apt-get update
+
+# Install Microsoft Edge
+echo "Installing Microsoft Edge..."
+sudo apt-get install microsoft-edge-dev -y
+
+echo "Microsoft Edge installation complete."
+```
+
+## KmCaster
+
+``` bash
+sudo apt install openjdk-19-jdk
+mkdir ~/programs
+wget https://github.com/DaveJarvis/kmcaster/releases/latest/download/kmcaster.jar -O ~/programs/kmcaster.jar
+java -jar ~/programs/kmcaster.jar -h
+java -jar ~/programs/kmcaster.jar -d 70
+```
+
+## Syncthing
+
+Syncthing is a great way to synchronize laptops, phones and other
+devices. I use it for syncing photos onto my laptop and into family
+photo albums, as shown below.
+
+![](syncthing.png)
+
+``` bash
+# Add Syncthing repository key
+curl -s https://syncthing.net/release-key.txt | sudo apt-key add -
+
+# Add Syncthing repository to system sources
+echo "deb https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+
+# Update system package cache
+sudo apt-get update
+
+# Install Syncthing package
+sudo apt-get install syncthing -y
+
+# Start the Syncthing service and enable it to run at system boot time
+syncthing
+
+# Output installation completed message
+echo "Syncthing installation completed successfully!"
+```
+
+## Discord
+
+Download discord from https://discord.com/download and install it with:
+
+``` bash
+sudo apt install libgconf-2-4 libc++1
+sudo dpkg -i discord.deb
+```
+
+## Slack
+
+``` bash
+sudo snap install slack --classic
 ```
 
 # Alternative projects
