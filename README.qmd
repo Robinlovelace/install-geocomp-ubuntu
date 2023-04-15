@@ -615,6 +615,26 @@ syncthing
 echo "Syncthing installation completed successfully!"
 ```
 
+## Rclone
+
+`rclone` is a tool for copying and syncing files between computers. It offers several advantages over rsync, including:
+
+1. Support for more cloud storage providers: Rclone supports a wide range of cloud storage providers, including Dropbox, Google Drive, Amazon S3, Microsoft OneDrive, Box, among others. In contrast, rsync only supports local, networked, or remote file transfer.
+
+2. Encryption and compression: Rclone supports several encryption methods and compression algorithms to secure and reduce the size of data during transfer. Rsynd doesn't have native support for encryption and compression.
+
+3. Synchronization: Rclone has a built-in synchronization tool that allows you to keep your files and directories in sync across different storage locations. While rsync can be used for synchronization, it requires a bit more setup and configuration.
+
+4. Multi-threaded transfers: Rclone can upload and download files using multiple threads simultaneously, which can significantly speed up the transfer process. Rsynce is limited to single-threaded transfers.
+
+5. Cross-platform compatibility: Rclone is a cross-platform tool that can be run on Windows, Linux, macOS, and other operating systems. Rsync, on the other hand, is primarily a Unix-based tool and may require additional setup on non-Unix systems.
+
+Install it with:
+  
+  ```{bash}
+  sudo apt install rclone
+  ```
+
 ## Discord
 
 Download discord from https://discord.com/download and install it with:
@@ -629,6 +649,12 @@ sudo dpkg -i discord.deb
 ```{bash}
 sudo snap install slack --classic
 ```
+
+## Move your home directory to a separate partition
+
+It's good practice to keep your home directory on a separate partition.
+
+See [here](https://www.howtogeek.com/442101/how-to-move-your-linux-home-directory-to-another-hard-drive/) for instructions on how to do that.
 
 # Alternative projects
 

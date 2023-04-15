@@ -42,8 +42,11 @@
   - [Edge](#edge)
   - [KmCaster](#kmcaster)
   - [Syncthing](#syncthing)
+  - [Rclone](#rclone)
   - [Discord](#discord)
   - [Slack](#slack)
+  - [Move your home directory to a separate
+    partition](#move-your-home-directory-to-a-separate-partition)
 - [Alternative projects](#alternative-projects)
 
 Inspired by a post on [installing commonly needed GIS software on
@@ -136,7 +139,16 @@ git config --global user.name "trachelium"
 
 ## R and RStudio
 
-From
+I have become a huge fan of VS Code and installing it plus some amazing
+extensions is covered in the next section. VS Code is increasingly good
+with decent support for visualisations and, as the screenshot below
+shows, even now marks-up markdown outputs from Quarto documents.
+However, if you want to do standard data science things and create
+reproducible documents, R+RStudio is hard to beat, especially if you’re
+just starting out with data science. Install them with the following
+commands:
+
+These instructions were adapted from
 https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/
 
 ``` bash
@@ -155,6 +167,19 @@ sudo add-apt-repository ppa:c2d4u.team/c2d4u4.0+
 ```
 
 ### Rapid install of R packages
+
+A difference between R packages on Windows and Ubuntu is that by default
+Windows always installs binary versions of packages, meaning no
+compilation time. To speed-up installation of R packages you can add an
+Ubuntu repo that will allow you to install pre-compiled packages from
+the system command line. Although there are projects like
+[r2u](https://github.com/eddelbuettel/r2u) that give you binary packages
+with `install.packages()` I prefer the control of using the system
+command line for binaries and the R console for installing packages that
+want to be compiled, to avoid issues like this:
+https://github.com/rocker-org/rocker-versioned2/issues/631
+
+Get a load of great R packages with the following commands:
 
 ``` bash
 # My own selection among 5000...
@@ -268,6 +293,14 @@ VS Code has a nice feature that enables you to develop inside a
 follows:
 
 ## Docker
+
+Docker is a system platform that allows you to run applications in
+isolated environments called containers. Containers are similar to
+virtual machines, but they are more lightweight and efficient.
+
+Docker allows you to run applications in a sandboxed environment, which
+is useful for reproducibility and security. In essence: run anything,
+anywhere.
 
 Following instructions from
 https://docs.docker.com/engine/install/ubuntu/, first install the
@@ -702,6 +735,46 @@ syncthing
 echo "Syncthing installation completed successfully!"
 ```
 
+## Rclone
+
+`rclone` is a tool for copying and syncing files between computers. It
+offers several advantages over rsync, including:
+
+1.  Support for more cloud storage providers: Rclone supports a wide
+    range of cloud storage providers, including Dropbox, Google Drive,
+    Amazon S3, Microsoft OneDrive, Box, among others. In contrast, rsync
+    only supports local, networked, or remote file transfer.
+
+2.  Encryption and compression: Rclone supports several encryption
+    methods and compression algorithms to secure and reduce the size of
+    data during transfer. Rsynd doesn’t have native support for
+    encryption and compression.
+
+3.  Synchronization: Rclone has a built-in synchronization tool that
+    allows you to keep your files and directories in sync across
+    different storage locations. While rsync can be used for
+    synchronization, it requires a bit more setup and configuration.
+
+4.  Multi-threaded transfers: Rclone can upload and download files using
+    multiple threads simultaneously, which can significantly speed up
+    the transfer process. Rsynce is limited to single-threaded
+    transfers.
+
+5.  Cross-platform compatibility: Rclone is a cross-platform tool that
+    can be run on Windows, Linux, macOS, and other operating systems.
+    Rsync, on the other hand, is primarily a Unix-based tool and may
+    require additional setup on non-Unix systems.
+
+Install it with:
+
+::: {.cell}
+
+``` bash
+sudo apt install rclone
+```
+
+:::
+
 ## Discord
 
 Download discord from https://discord.com/download and install it with:
@@ -716,6 +789,14 @@ sudo dpkg -i discord.deb
 ``` bash
 sudo snap install slack --classic
 ```
+
+## Move your home directory to a separate partition
+
+It’s good practice to keep your home directory on a separate partition.
+
+See
+[here](https://www.howtogeek.com/442101/how-to-move-your-linux-home-directory-to-another-hard-drive/)
+for instructions on how to do that.
 
 # Alternative projects
 
