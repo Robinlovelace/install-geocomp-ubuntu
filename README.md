@@ -128,6 +128,23 @@ cd install-geocomp-ubuntu
 less README.md
 ```
 
+You may also want to update your Git version, which is installed by
+default on Ubuntu:
+
+``` bash
+sudo add-apt-repository ppa:git-core/ppa
+sudo apt update
+sudo apt install git
+```
+
+Previously I was on Git 2.25.1, now I’m on 2.40.0:
+
+``` bash
+git --version
+```
+
+    git version 2.40.0
+
 ### Setting up Git
 
 Setup git with the following commands
@@ -135,6 +152,8 @@ Setup git with the following commands
 ``` bash
 git config --global user.email "test@test.org.uk"
 git config --global user.name "trachelium"
+# Set the default branch to main:
+git config --global init.defaultBranch main
 ```
 
 ## R and RStudio
