@@ -43,8 +43,10 @@
   - [KmCaster](#kmcaster)
   - [Syncthing](#syncthing)
   - [Rclone](#rclone)
+  - [Peak](#peak)
   - [Discord](#discord)
   - [Slack](#slack)
+  - [OneDrive](#onedrive)
   - [Move your home directory to a separate
     partition](#move-your-home-directory-to-a-separate-partition)
 - [Alternative projects](#alternative-projects)
@@ -143,7 +145,7 @@ Previously I was on Git 2.25.1, now I’m on 2.40.0:
 git --version
 ```
 
-    git version 2.40.0
+    git version 2.40.1
 
 ### Setting up Git
 
@@ -263,6 +265,12 @@ sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/v
 sudo apt update
 sudo apt-get install code
 code --install-extension ms-vscode-remote.remote-containers
+# Install the Python extension:
+code --install-extension ms-python.python
+# Remote containers:
+code --install-extension ms-vscode-remote.remote-containers
+# Install ritwickdey.LiveServer:
+code --install-extension ritwickdey.LiveServer
 ```
 
 ### Executing bash commands in VS Code
@@ -786,13 +794,19 @@ offers several advantages over rsync, including:
 
 Install it with:
 
-::: {.cell}
-
 ``` bash
 sudo apt install rclone
 ```
 
-:::
+## Peak
+
+Install the screenshare-to-GIF tool Peak with the following commands on
+Ubuntu:
+
+``` bash
+# Install simple screen recorder on ubuntu:
+sudo apt install simplescreenrecorder
+```
 
 ## Discord
 
@@ -807,6 +821,31 @@ sudo dpkg -i discord.deb
 
 ``` bash
 sudo snap install slack --classic
+```
+
+## OneDrive
+
+https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md
+
+``` bash
+rm -rf /var/lib/dpkg/lock-frontend
+rm -rf /var/lib/dpkg/lock
+apt-get update
+apt-get upgrade -y
+apt-get dist-upgrade -y
+apt-get autoremove -y
+apt-get autoclean -y
+```
+
+https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md#distribution-ubuntu-2204
+
+``` bash
+wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_22.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
+sudo apt-get update
+# Step 4: Install 'onedrive'
+# Run: 
+sudo apt install --no-install-recommends --no-install-suggests onedrive
 ```
 
 ## Move your home directory to a separate partition
