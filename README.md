@@ -17,6 +17,7 @@
       Docker](#post-installation-steps-for-docker)
     - [Running devcontainer with VS
       code](#running-devcontainer-with-vs-code)
+    - [Running a docker container](#running-a-docker-container)
   - [QGIS](#qgis)
   - [Rust](#rust)
 - [Getting started with tools for
@@ -29,6 +30,7 @@
     - [sd](#sd)
     - [exa](#exa)
     - [dust](#dust)
+    - [ripgrep_all](#ripgrep_all)
   - [CopyQ](#copyq)
   - [AppImage Launcher](#appimage-launcher)
   - [LogSeq](#logseq)
@@ -47,6 +49,7 @@
   - [Discord](#discord)
   - [Slack](#slack)
   - [OneDrive](#onedrive)
+  - [OnlyOffice](#onlyoffice)
   - [Move your home directory to a separate
     partition](#move-your-home-directory-to-a-separate-partition)
 - [Alternative projects](#alternative-projects)
@@ -145,7 +148,7 @@ Previously I was on Git 2.25.1, now I’m on 2.40.0:
 git --version
 ```
 
-    git version 2.40.1
+    git version 2.41.0
 
 ### Setting up Git
 
@@ -419,6 +422,22 @@ anything in reproducible and easy-to-use devcontainers!
 
 ![](vscode-devcontainer.png)
 
+### Running a docker container
+
+The following launches a docker container with JupyterLab:
+
+``` bash
+docker run -it --rm \
+  -p 8888:8888 \
+  -u root \
+  -v "${PWD}/jupyterlab-jovyan":/home/jovyan \
+  -e NB_UID=$(id -u) \
+  -e NB_GID=$(id -g) \
+  -e CHOWN_HOME=yes \
+  -e CHOWN_HOME_OPTS='-R' \
+  glcr.b-data.ch/jupyterlab/r/geospatial
+```
+
 ## QGIS
 
 From: https://github.com/geocompx/docker/blob/master/qgis/Dockerfile
@@ -554,6 +573,16 @@ to navigate through your system and view disk usage.
 ``` bash
 cargo install du-dust
 dust --help
+```
+
+### ripgrep_all
+
+ripgrep_all is a tool that combines the power of ripgrep for all file
+formats.
+
+``` bash
+apt install build-essential pandoc poppler-utils ffmpeg ripgrep cargo
+cargo install --locked ripgrep_all
 ```
 
 ## CopyQ
@@ -846,6 +875,14 @@ sudo apt-get update
 # Step 4: Install 'onedrive'
 # Run: 
 sudo apt install --no-install-recommends --no-install-suggests onedrive
+```
+
+## OnlyOffice
+
+``` bash
+sudo apt install gdebi
+wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
+sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
 
 ## Move your home directory to a separate partition

@@ -318,6 +318,22 @@ If you see something like this, congratulations, you can develop almost anything
 
 ![](vscode-devcontainer.png)
 
+### Running a docker container
+
+The following launches a docker container with JupyterLab:
+
+```{bash}
+docker run -it --rm \
+  -p 8888:8888 \
+  -u root \
+  -v "${PWD}/jupyterlab-jovyan":/home/jovyan \
+  -e NB_UID=$(id -u) \
+  -e NB_GID=$(id -g) \
+  -e CHOWN_HOME=yes \
+  -e CHOWN_HOME_OPTS='-R' \
+  glcr.b-data.ch/jupyterlab/r/geospatial
+```
+
 ## QGIS
 
 From: https://github.com/geocompx/docker/blob/master/qgis/Dockerfile
@@ -443,6 +459,15 @@ dust is a more intuitive version of du in rust. It provides a better way to navi
 ```{bash}
 cargo install du-dust
 dust --help
+```
+
+### ripgrep_all
+
+ripgrep_all is a tool that combines the power of ripgrep for all file formats.
+
+```{bash}
+apt install build-essential pandoc poppler-utils ffmpeg ripgrep cargo
+cargo install --locked ripgrep_all
 ```
 
 ## CopyQ
@@ -706,6 +731,14 @@ sudo apt-get update
 # Step 4: Install 'onedrive'
 # Run: 
 sudo apt install --no-install-recommends --no-install-suggests onedrive
+```
+
+## OnlyOffice
+
+```{bash}
+sudo apt install gdebi
+wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
+sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
 
 
