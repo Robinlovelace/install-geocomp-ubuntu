@@ -217,7 +217,7 @@ code --install-extension github.copilot
 Install the Quarto command line tool:
 
 ```{bash}
-wget "https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.45/quarto-1.5.45-linux-amd64.deb" -O /tmp/quarto.deb
+wget "https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.57/quarto-1.5.57-linux-amd64.deb" -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
 
