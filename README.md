@@ -149,7 +149,7 @@ Previously I was on Git 2.25.1, now I’m on 2.40.0:
 git --version
 ```
 
-    git version 2.43.2
+    git version 2.47.1
 
 ### Setting up Git
 
@@ -309,7 +309,7 @@ code --install-extension github.copilot
 Install the Quarto command line tool:
 
 ``` bash
-wget "https://github.com/quarto-dev/quarto-cli/releases/download/v1.4.553/quarto-1.4.553-linux-amd64.deb" -O /tmp/quarto.deb
+wget "https://github.com/quarto-dev/quarto-cli/releases/download/v1.6.23/quarto-1.6.23-linux-amd64.deb" -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
 
