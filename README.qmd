@@ -92,6 +92,23 @@ git config --global user.name "trachelium"
 git config --global init.defaultBranch main
 ```
 
+### dra
+
+```{bash}
+
+```{bash}
+wget $(curl -s https://api.github.com/repos/devmatteini/dra/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4) -O /tmp/dra.deb
+sudo dpkg -i /tmp/dra.deb
+```
+
+That allows you to download assets with commands such as:
+
+```bash
+# Automatically select and download an asset based on your operating system and architecture
+# you can use -a or --automatic
+dra download -a devmatteini/dra-tests
+```
+
 ## R and RStudio
 
 I have become a huge fan of VS Code and installing it plus some amazing extensions is covered in the next section.
@@ -187,6 +204,20 @@ code --install-extension ms-python.python
 code --install-extension ms-vscode-remote.remote-containers
 # Install ritwickdey.LiveServer:
 code --install-extension ritwickdey.LiveServer
+```
+
+### Positron: a VS Code-compatible IDS
+
+Get the latest pre-release with:
+
+```{bash}
+# Manually:
+# wget https://github.com/posit-dev/positron/releases/download/2025.01.0-39/Positron-2025.01.0-39.deb -O /tmp/positron.deb
+# sudo dpkg -i /tmp/positron.deb
+# Automatically:
+# Find latest release:
+curl https://github.com/posit-dev/positron/releases | grep "positron/releases/tag" | grep -oP '(?<=tag/)[^"]+' | head -n 1 | xargs -I {} wget https://github.com/posit-dev/positron/releases/download/{}/Positron-2025.01.0-39.deb -O /tmp/positron.deb
+sudo dpkg -i /tmp/positron.deb
 ```
 
 ### Executing bash commands in VS Code
@@ -776,4 +807,3 @@ See [here](https://www.howtogeek.com/442101/how-to-move-your-linux-home-director
 
 - [ubuntu-post-install](https://github.com/snwh/ubuntu-post-install)
 - [install-tl-ubuntu](https://github.com/scottkosty/install-tl-ubuntu)
-

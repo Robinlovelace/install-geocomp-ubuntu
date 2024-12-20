@@ -5,9 +5,12 @@
 - [Install key packages](#install-key-packages)
   - [GitHub’s gh CLI](#githubs-gh-cli)
     - [Setting up Git](#setting-up-git)
+    - [dra](#dra)
   - [R and RStudio](#r-and-rstudio)
     - [Rapid install of R packages](#rapid-install-of-r-packages)
   - [VS Code](#vs-code)
+    - [Positron: a VS Code-compatible
+      IDS](#positron-a-vs-code-compatible-ids)
     - [Executing bash commands in VS
       Code](#executing-bash-commands-in-vs-code)
     - [Installing key VS Code
@@ -162,6 +165,24 @@ git config --global user.name "trachelium"
 git config --global init.defaultBranch main
 ```
 
+### dra
+
+``` bash
+```
+
+``` bash
+wget $(curl -s https://api.github.com/repos/devmatteini/dra/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4) -O /tmp/dra.deb
+sudo dpkg -i /tmp/dra.deb
+```
+
+That allows you to download assets with commands such as:
+
+``` bash
+# Automatically select and download an asset based on your operating system and architecture
+# you can use -a or --automatic
+dra download -a devmatteini/dra-tests
+```
+
 ## R and RStudio
 
 I have become a huge fan of VS Code and installing it plus some amazing
@@ -277,6 +298,20 @@ code --install-extension ms-vscode-remote.remote-containers
 code --install-extension ritwickdey.LiveServer
 ```
 
+### Positron: a VS Code-compatible IDS
+
+Get the latest pre-release with:
+
+``` bash
+# Manually:
+# wget https://github.com/posit-dev/positron/releases/download/2025.01.0-39/Positron-2025.01.0-39.deb -O /tmp/positron.deb
+# sudo dpkg -i /tmp/positron.deb
+# Automatically:
+# Find latest release:
+curl https://github.com/posit-dev/positron/releases | grep "positron/releases/tag" | grep -oP '(?<=tag/)[^"]+' | head -n 1 | xargs -I {} wget https://github.com/posit-dev/positron/releases/download/{}/Positron-2025.01.0-39.deb -O /tmp/positron.deb
+sudo dpkg -i /tmp/positron.deb
+```
+
 ### Executing bash commands in VS Code
 
 A great feature of VS Code is that you can execute bash commands in the
@@ -309,7 +344,7 @@ code --install-extension github.copilot
 Install the Quarto command line tool:
 
 ``` bash
-wget "https://github.com/quarto-dev/quarto-cli/releases/download/v1.6.23/quarto-1.6.23-linux-amd64.deb" -O /tmp/quarto.deb
+wget $(curl -s https://api.github.com/repos/quarto-dev/quarto-cli/releases/latest | grep "browser_download_url.*linux-amd64.deb" | cut -d '"' -f 4) -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
 
