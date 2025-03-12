@@ -796,6 +796,16 @@ wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-de
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
 
+# Positron
+
+Positron is an IDE for data science.
+
+Get the latest release for your system from https://github.com/posit-dev/positron/
+
+```{bash}
+wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
+sudo dpkg -i /tmp/positron.deb
+```
 
 ## Move your home directory to a separate partition
 
