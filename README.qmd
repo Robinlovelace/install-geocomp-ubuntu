@@ -248,7 +248,7 @@ code --install-extension github.copilot
 Install the Quarto command line tool:
 
 ```{bash}
-wget $(curl -s https://api.github.com/repos/quarto-dev/quarto-cli/releases/latest | grep "browser_download_url.*linux-amd64.deb" | cut -d '"' -f 4) -O /tmp/quarto.deb
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.27/quarto-1.7.27-linux-amd64.deb -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
 
@@ -260,6 +260,15 @@ Rscript -e "remotes::install_github('quarto-dev/quarto-r')"
 
 VS Code has a nice feature that enables you to develop inside a 'devcontainer'.
 Devcontainers rely on Docker, which can be installed as follows:
+
+### LaTeX
+
+```{bash}
+# make sure perl is properly installed (e.g., apt install -y perl)
+perl -mFile::Find /dev/null
+# then install TinyTeX
+wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+```
 
 ## Docker
 

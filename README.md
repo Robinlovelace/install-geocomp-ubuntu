@@ -16,6 +16,7 @@
     - [Installing key VS Code
       extensions](#installing-key-vs-code-extensions)
     - [Creating documents with Quarto](#creating-documents-with-quarto)
+    - [LaTeX](#latex)
   - [Docker](#docker)
     - [Post installation steps for
       Docker](#post-installation-steps-for-docker)
@@ -54,6 +55,7 @@
   - [Slack](#slack)
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
+- [Positron](#positron)
   - [Move your home directory to a separate
     partition](#move-your-home-directory-to-a-separate-partition)
 - [Alternative projects](#alternative-projects)
@@ -152,7 +154,7 @@ Previously I was on Git 2.25.1, now I’m on 2.40.0:
 git --version
 ```
 
-    git version 2.47.1
+    git version 2.49.0
 
 ### Setting up Git
 
@@ -344,7 +346,7 @@ code --install-extension github.copilot
 Install the Quarto command line tool:
 
 ``` bash
-wget $(curl -s https://api.github.com/repos/quarto-dev/quarto-cli/releases/latest | grep "browser_download_url.*linux-amd64.deb" | cut -d '"' -f 4) -O /tmp/quarto.deb
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.27/quarto-1.7.27-linux-amd64.deb -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
 
@@ -357,6 +359,15 @@ Rscript -e "remotes::install_github('quarto-dev/quarto-r')"
 VS Code has a nice feature that enables you to develop inside a
 ‘devcontainer’. Devcontainers rely on Docker, which can be installed as
 follows:
+
+### LaTeX
+
+``` bash
+# make sure perl is properly installed (e.g., apt install -y perl)
+perl -mFile::Find /dev/null
+# then install TinyTeX
+wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+```
 
 ## Docker
 
@@ -943,6 +954,18 @@ sudo apt install --no-install-recommends --no-install-suggests onedrive
 sudo apt install gdebi
 wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
+```
+
+# Positron
+
+Positron is an IDE for data science.
+
+Get the latest release for your system from
+https://github.com/posit-dev/positron/
+
+``` bash
+wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
+sudo dpkg -i /tmp/positron.deb
 ```
 
 ## Move your home directory to a separate partition
