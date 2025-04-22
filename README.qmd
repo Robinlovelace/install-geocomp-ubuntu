@@ -40,6 +40,15 @@ Any comments/suggestions: welcome
 # Install key packages
 
 Fire up a terminal, e.g. with `Ctl-Alt-T` after booting Ubuntu, then enter the following.
+(You can also run this from inside an editor):
+
+```{bash}
+ls
+```
+
+```{r}
+ls()
+```
 
 ## GitHub's gh CLI
 
@@ -58,7 +67,7 @@ curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo 
 
 Test to see if it works as follows:
 
-```{bash}
+```{sh}
 # Log-in to GitHub from the command line
 gh auth login
 gh repo clone Robinlovelace/install-geocomp-ubuntu
@@ -95,8 +104,6 @@ git config --global init.defaultBranch main
 ### dra
 
 ```{bash}
-
-```{bash}
 wget $(curl -s https://api.github.com/repos/devmatteini/dra/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4) -O /tmp/dra.deb
 sudo dpkg -i /tmp/dra.deb
 ```
@@ -116,22 +123,46 @@ VS Code is increasingly good with decent support for visualisations and, as the 
 However, if you want to do standard data science things and create reproducible documents, R+RStudio is hard to beat, especially if you're just starting out with data science.
 Install them with the following commands:
 
-These instructions were adapted from https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/
+These instructions are from https://github.com/eddelbuettel/r2u
 
-```{bash}
-sudo apt update
-sudo apt upgrade
-sudo apt install -y --no-install-recommends software-properties-common dirmngr
-# Add the keys
-wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-# add the R 4.0 repo from CRAN -- adjust 'focal' to 'groovy' or 'bionic' as needed
-sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
 
-# You'll be asked to choose your geographical area
-sudo apt install -y r-base r-base-core r-recommended r-base-dev
-# Install PPA with pre-compiled packages
-sudo add-apt-repository ppa:c2d4u.team/c2d4u4.0+
+First add the repository key so that `apt` knows it (this is optional but recommended)
+
+```sh
+sudo -i
+apt update -qq && apt install --yes --no-install-recommends wget \
+    ca-certificates gnupg
+wget -q -O- https://eddelbuettel.github.io/r2u/assets/dirk_eddelbuettel_key.asc \
+    | tee -a /etc/apt/trusted.gpg.d/cranapt_key.asc
+echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu jammy main" \
+     > /etc/apt/sources.list.d/cranapt.list
+
+apt update -qq
+
+wget -q -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc \
+    | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" \
+    > /etc/apt/sources.list.d/cran_r.list
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
+    67C2D66C4B1D4339 51716619E084DAB9
+apt update -qq
+DEBIAN_FRONTEND=noninteractive apt install --yes --no-install-recommends \
+    r-base-core
+
+echo "Package: *" > /etc/apt/preferences.d/99cranapt
+echo "Pin: release o=CRAN-Apt Project" >> /etc/apt/preferences.d/99cranapt
+echo "Pin: release l=CRAN-Apt Packages" >> /etc/apt/preferences.d/99cranapt
+echo "Pin-Priority: 700"  >> /etc/apt/preferences.d/99cranapt
+
+apt install --yes --no-install-recommends python3-{dbus,gi,apt}
+## Then install bspm (as root) and enable it, and enable a speed optimization
+# Rscript -e 'install.packages("bspm")'
+# RHOME=$(R RHOME)
+# echo "suppressMessages(bspm::enable())" >> ${RHOME}/etc/Rprofile.site
+# echo "options(bspm.version.check=FALSE)" >> ${RHOME}/etc/Rprofile.site
+# exit # back to default user
 ```
+
 
 ### Rapid install of R packages
 
@@ -143,13 +174,10 @@ Although there are projects like [r2u](https://github.com/eddelbuettel/r2u) that
 Get a load of great R packages with the following commands:
 
 ```{bash}
-# My own selection among 5000...
-sudo apt install -y r-cran-rgl r-cran-rjags r-cran-snow r-cran-ggplot2 r-cran-igraph r-cran-lme4 r-cran-rjava r-cran-devtools r-cran-roxygen2 r-cran-rjava
-sudo apt install r-cran-tidyverse
-sudo apt install r-cran-sf r-cran-tmap r-cran-osmextract r-cran-mapview
 # System deps for cartography
 sudo apt install -y libgdal-dev libproj-dev libgeos-dev libudunits2-dev libv8-dev libnode-dev libcairo2-dev libnetcdf-dev
 sudo apt install -y libglu1-mesa-dev freeglut3-dev mesa-common-dev
+sudo apt install libharfbuzz-dev libfribidi-dev 
 # Extra packages for image manipulation
 sudo apt install -y libmagick++-dev libjq-dev libv8-dev libprotobuf-dev protobuf-compiler libsodium-dev imagemagick libgit2-dev
 # rspatial
@@ -157,7 +185,7 @@ sudo apt install r-cran-sf r-cran-terra r-cran-mapedit r-cran-tmap r-cran-mapdec
 Rscript -e 'install.packages("languageserver")'
 ```
 
-RStudio: https://www.entroware.com/store/proteus
+RStudio:
 
 ```{bash}
 wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2023.03.0-386-amd64.deb
@@ -291,18 +319,8 @@ sudo apt-get install \
 Then follow these commands:
 
 ```{bash}
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-# Use the following command to set up the repository:
-echo \
-"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-# Install Docker Engine
-
-# Update the apt package index, and install the latest version of Docker Engine, containerd, and Docker Compose, or go to the next step to install a specific version:
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+curl -fsSL https://test.docker.com -o test-docker.sh
+sudo sh test-docker.sh
 ```
 
 ### Post installation steps for Docker
@@ -530,7 +548,7 @@ dust --help
 ripgrep_all is a tool that combines the power of ripgrep for all file formats.
 
 ```{bash}
-apt install build-essential pandoc poppler-utils ffmpeg ripgrep cargo
+sudo apt install build-essential pandoc poppler-utils ffmpeg ripgrep cargo
 cargo install --locked ripgrep_all
 ```
 
@@ -538,14 +556,6 @@ cargo install --locked ripgrep_all
 
 ```{bash}
 sudo add-apt-repository ppa:hluk/copyq
-```
-
-This command adds the PPA maintained by the CopyQ developer Lukas Holecek to your system's software sources. You'll be prompted to enter your password to confirm the command.
-
-Update the package list by running the following command:
-
-```{bash}
-sudo apt update
 ```
 
 Install CopyQ by running the following command:
@@ -563,9 +573,7 @@ Once the installation is complete, you can launch CopyQ by typing copyq in the t
 Intuitive and time-saving management of AppImages.
 
 ```{bash}
-sudo add-apt-repository ppa:appimagelauncher-team/stable
-sudo apt update
-sudo apt install appimagelauncher
+snap install logseq
 ```
 
 ## LogSeq
@@ -607,39 +615,49 @@ sudo chmod +x zotero.desktop
 cd -
 ```
 
-## ddterm
+## guake
 
-ddterm is top down terminal: https://github.com/ddterm/gnome-shell-extension-ddterm
-I have long been a fan of [Guake](https://github.com/Guake/guake/), the popular terminal emulator based roughly on Quake's top down terminal.
-Unfortunately, Guake does not have great support for Wayland, Ubuntu 22.04's display system, as discussed in this issue that is still open despite being a priority that was opened in 2015: https://github.com/Guake/guake/issues/492
-
-Install it as follows:
 
 ```{bash}
-cd ~/Downloads/
-wget https://github.com/ddterm/gnome-shell-extension-ddterm/releases/download/v43/ddterm@amezin.github.com.shell-extension.zip
-gnome-extensions install -f ~/Downloads/ddterm@amezin.github.com.shell-extension.zip
-sudo reboot # you may need to reboot the computer to use it
-gnome-extensions enable ddterm@amezin.github.com 
+sudo apt install guake
+```
+
+See instructions here to get it working on Wayland: https://github.com/Guake/guake/issues/2127
+
+## Deno
+
+```{bash}
+curl -fsSL https://deno.land/x/install/install.sh | sh
+```
+
+## nvm
+
+```{bash}
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+```
+
+## Claude code
+
+```{bash}
+npm install -g @anthropic-ai/claude-code
 ```
 
 ## Signal
 
 Signal is an app for messaging and more.
 
-```{bash}
-# NOTE: These instructions only work for 64 bit Debian-based
+```{bash}# NOTE: These instructions only work for 64-bit Debian-based
 # Linux distributions such as Ubuntu, Mint etc.
 
-# 1. Install our official public software signing key
+# 1. Install our official public software signing key:
 wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signal-desktop-keyring.gpg
-cat signal-desktop-keyring.gpg | sudo tee -a /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
+cat signal-desktop-keyring.gpg | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
 
-# 2. Add our repository to your list of repositories
+# 2. Add our repository to your list of repositories:
 echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\
-  sudo tee -a /etc/apt/sources.list.d/signal-xenial.list
+  sudo tee /etc/apt/sources.list.d/signal-xenial.list
 
-# 3. Update your package database and install signal
+# 3. Update your package database and install Signal:
 sudo apt update && sudo apt install signal-desktop
 ```
 
@@ -691,14 +709,25 @@ sudo apt-get install microsoft-edge-dev -y
 echo "Microsoft Edge installation complete."
 ```
 
+## Flatpak
+
+```{bash}
+sudo apt install flatpak
+sudo apt install gnome-software-plugin-flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+```
+
 ## KmCaster
 
 ```{bash}
-sudo apt install openjdk-19-jdk
-mkdir ~/programs
-wget https://github.com/DaveJarvis/kmcaster/releases/latest/download/kmcaster.jar -O ~/programs/kmcaster.jar
-java -jar ~/programs/kmcaster.jar -h
-java -jar ~/programs/kmcaster.jar -d 70
+# Enable repo
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+# Install dependencies
+flatpak-builder build-dir com.whitemagicsoftware.kmcaster.yaml --force-clean --install-deps-only --install-deps-from flathub
+# Build and install
+flatpak-builder build-dir com.whitemagicsoftware.kmcaster.yaml --install --user --force-clean
+# Run it
+flatpak run --user com.whitemagicsoftware.kmcaster
 ```
 
 ## Syncthing
@@ -708,23 +737,19 @@ Syncthing is a great way to synchronize laptops, phones and other devices. I use
 ![](syncthing.png)
 
 ```{bash}
-# Add Syncthing repository key
-curl -s https://syncthing.net/release-key.txt | sudo apt-key add -
+sudo apt install syncthing
+```
 
-# Add Syncthing repository to system sources
-echo "deb https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+## Dropox
 
-# Update system package cache
-sudo apt-get update
+See https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2024.04.17_amd64.deb
 
-# Install Syncthing package
-sudo apt-get install syncthing -y
+```{bash}
+wget https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2024.04.17_amd64.deb -O /tmp/dropbox.deb
+sudo dpkg -i /tmp/dropbox.deb
 
-# Start the Syncthing service and enable it to run at system boot time
-syncthing
-
-# Output installation completed message
-echo "Syncthing installation completed successfully!"
+# gpg signature support:
+sudo apt install python3-gpg
 ```
 
 ## Rclone
@@ -755,7 +780,6 @@ Install the screenshare-to-GIF tool Peak with the following commands on Ubuntu:
 # Install simple screen recorder on ubuntu:
 sudo apt install simplescreenrecorder
 ```
-
 
 ## Discord
 
@@ -789,11 +813,9 @@ apt-get autoclean -y
 https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md#distribution-ubuntu-2204
 
 ```{bash}
-wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_22.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
+wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_24.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_24.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
 sudo apt-get update
-# Step 4: Install 'onedrive'
-# Run: 
 sudo apt install --no-install-recommends --no-install-suggests onedrive
 ```
 
