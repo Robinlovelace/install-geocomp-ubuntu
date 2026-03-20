@@ -860,7 +860,7 @@ To open Ghostty instantly, set a custom GNOME shortcut:
 Add the following to `~/.config/ghostty/config`:
 
 ``` text
-window-start-fullscreen = true
+window-fullscreen = true
 ```
 
 Alternatively, try setting it from the command line:
@@ -894,7 +894,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`xxqvfl# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`hicbvf# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
