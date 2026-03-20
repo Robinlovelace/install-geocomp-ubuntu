@@ -8,6 +8,7 @@
     - [dra](#dra)
   - [R and RStudio](#r-and-rstudio)
     - [Rapid install of R packages](#rapid-install-of-r-packages)
+  - [Python for Geocomputation](#python-for-geocomputation)
   - [VS Code](#vs-code)
     - [Positron: a VS Code-compatible
       IDE](#positron-a-vs-code-compatible-ide)
@@ -321,6 +322,27 @@ terminal.
 ``` bash
 git status
 git commit -am 'Update instructions with info on using RStudio'
+```
+
+## Python for Geocomputation
+
+Python is a versatile language with a rich ecosystem for geographic data
+science. While `apt` provides some packages, using a modern environment
+manager like `pixi` (installed in the [Modern Data
+Stack](#modern-data-stack) section) is recommended for reproducibility.
+
+To quickly install core geographic packages in a new project:
+
+``` bash
+pixi init my-geo-project
+cd my-geo-project
+pixi add geopandas rasterio shapely folium matplotlib
+```
+
+Alternatively, using standard `pip`:
+
+``` bash
+python3 -m pip install --user geopandas rasterio shapely folium matplotlib
 ```
 
 ## VS Code
@@ -867,12 +889,11 @@ window-fullscreen = true
 **Pro Tip: Use Ghostty as a Guake replacement (Dropdown)**
 
 To get a full-width dropdown at the top of your screen with adjustable
-height:
+height on Ubuntu 26.04 (Wayland):
+
+1.  Add the following to `~/.config/ghostty/config`:
 
 ``` text
-# Global hotkey for the dropdown (Quick Terminal)
-keybind = global:f12=toggle_quick_terminal
-
 # Quick Terminal Behavior
 quick-terminal-position = top
 quick-terminal-animation-duration = 0.2
@@ -888,6 +909,20 @@ keybind = ctrl+down=resize_height:10
 
 # General Appearance
 window-decoration = false
+
+# Keep Ghostty running in background for the toggle command to work
+quit-after-last-window-closed = false
+```
+
+2.  Set a custom GNOME shortcut for the toggle:
+    - Name: `Ghostty Toggle`
+    - Command: `ghostty +toggle-quick-terminal`
+    - Shortcut: `F12`
+
+Alternatively, set it via command line:
+
+``` bash
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty-toggle/ command 'ghostty +toggle-quick-terminal'
 ```
 
 ## Deno
@@ -912,7 +947,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`oxfaek# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`xnjrbo# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
