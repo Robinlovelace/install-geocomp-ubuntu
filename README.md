@@ -852,7 +852,8 @@ To open Ghostty instantly, set a custom GNOME shortcut:
     Shortcuts**.
 2.  Go to **Custom Shortcuts** and click **+**.
 3.  Name: `Launch Ghostty`
-4.  Command: `/snap/bin/ghostty --gtk-single-instance=true`
+4.  Command:
+    `/snap/bin/ghostty --gtk-single-instance=true --window-fullscreen=true`
 5.  Shortcut: Press `Ctrl+Alt+G`.
 
 **Pro Tip: Start Ghostty fullscreen by default**
@@ -868,7 +869,7 @@ Alternatively, try setting it from the command line:
 ``` bash
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/']"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ name 'Launch Ghostty'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ command '/snap/bin/ghostty --gtk-single-instance=true'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ command '/snap/bin/ghostty --gtk-single-instance=true --window-fullscreen=true'
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ binding '<Control><Alt>g'
 ```
 
@@ -894,7 +895,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`hicbvf# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`mzhmxb# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
