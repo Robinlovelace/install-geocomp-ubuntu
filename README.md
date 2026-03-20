@@ -826,9 +826,13 @@ wget https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-x86_6
 tar -xvf /tmp/zellij.tar.gz -C /tmp
 sudo mv /tmp/zellij /usr/local/bin/
 rm /tmp/zellij.tar.gz
-# Run it with:
-# zellij
 ```
+
+**Pro Tip: Launch Zellij by default in Guake**
+
+1.  Open `guake-prefs`.
+2.  Under **Shell**, set the **Default interpreter** to
+    `/usr/local/bin/zellij`.
 
 ## Ghostty
 
@@ -838,6 +842,26 @@ replacement for Guake or standard GNOME Terminal.
 
 ``` bash
 sudo snap install ghostty --classic
+```
+
+**Pro Tip: Launch Ghostty with a shortcut**
+
+To open Ghostty instantly, set a custom GNOME shortcut:
+
+1.  Open **Settings** \> **Keyboard** \> **View and Customize
+    Shortcuts**.
+2.  Go to **Custom Shortcuts** and click **+**.
+3.  Name: `Launch Ghostty`
+4.  Command: `/snap/bin/ghostty --gtk-single-instance=true`
+5.  Shortcut: Press `Ctrl+Alt+G`.
+
+Alternatively, try setting it from the command line:
+
+``` bash
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ name 'Launch Ghostty'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ command '/snap/bin/ghostty --gtk-single-instance=true'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ binding '<Control><Alt>g'
 ```
 
 ## Deno
@@ -862,7 +886,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`xtowwr# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`upptfh# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:

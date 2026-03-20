@@ -701,6 +701,14 @@ To open Ghostty instantly, set a custom GNOME shortcut:
 4. Command: `/snap/bin/ghostty --gtk-single-instance=true`
 5. Shortcut: Press `Ctrl+Alt+G`.
 
+**Pro Tip: Start Ghostty fullscreen by default**
+
+Add the following to `~/.config/ghostty/config`:
+
+```text
+window-start-fullscreen = true
+```
+
 Alternatively, try setting it from the command line:
 
 ```{bash}
