@@ -350,12 +350,13 @@ The following steps enable you to run docker without `sudo`.
 sudo groupadd -f docker
 # Add your user to the docker group:
 sudo usermod -aG docker $USER
+```
 
-# IMPORTANT: You must log out and log back in for group changes to take effect.
-# Alternatively, you can run the following command to activate the changes in the current shell (if available):
-# newgrp docker
+**CRITICAL: You must LOG OUT and LOG BACK IN (or restart) for these changes to take effect.**
 
-# Verify that you can run docker commands without sudo (after re-login).
+After logging back in, verify that you can run docker commands without `sudo`:
+
+```{bash}
 docker run hello-world
 ```
 
@@ -734,13 +735,14 @@ To get a full-width dropdown at the top of your screen on Ubuntu 26.04 (Wayland)
 1. Add the following to `~/.config/ghostty/config`:
 
 ```text
-# Quick Terminal Behavior
+# Dropdown (Quick Terminal)
+keybind = global:f12=toggle_quick_terminal
 quick-terminal-position = top
 quick-terminal-size = 100%,40%
-quick-terminal-animation-duration = 0.2
 quick-terminal-autohide = true
 
-# General Appearance
+# Standalone Window Behavior
+maximize = true
 theme = Adwaita Dark
 window-decoration = false
 
@@ -748,16 +750,11 @@ window-decoration = false
 quit-after-last-window-closed = false
 ```
 
-2. Set a custom GNOME shortcut for the toggle:
-   - Name: `Ghostty Toggle`
+2. Set a custom GNOME shortcut for the toggle (`F12`):
    - Command: `ghostty +toggle_quick_terminal`
-   - Shortcut: `F12`
 
-Alternatively, set it via command line:
-
-```bash
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty-toggle/ command 'ghostty +toggle_quick_terminal'
-```
+3. Set a custom GNOME shortcut for a maximized standalone window (`Ctrl+Alt+G`):
+   - Command: `ghostty --maximize=true`
 
 ## Deno
 

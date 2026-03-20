@@ -874,8 +874,7 @@ To open Ghostty instantly, set a custom GNOME shortcut:
     Shortcuts**.
 2.  Go to **Custom Shortcuts** and click **+**.
 3.  Name: `Launch Ghostty`
-4.  Command:
-    `/snap/bin/ghostty --gtk-single-instance=true --window-state=fullscreen`
+4.  Command: `ghostty`
 5.  Shortcut: Press `Ctrl+Alt+G`.
 
 **Pro Tip: Start Ghostty fullscreen by default**
@@ -883,31 +882,25 @@ To open Ghostty instantly, set a custom GNOME shortcut:
 Add the following to `~/.config/ghostty/config`:
 
 ``` text
-window-fullscreen = true
+fullscreen = true
 ```
 
 **Pro Tip: Use Ghostty as a Guake replacement (Dropdown)**
 
-To get a full-width dropdown at the top of your screen with adjustable
-height on Ubuntu 26.04 (Wayland):
+To get a full-width dropdown at the top of your screen on Ubuntu 26.04
+(Wayland):
 
 1.  Add the following to `~/.config/ghostty/config`:
 
 ``` text
 # Quick Terminal Behavior
 quick-terminal-position = top
+quick-terminal-size = 100%,40%
 quick-terminal-animation-duration = 0.2
 quick-terminal-autohide = true
 
-# Height and Width
-initial-window-width-percent = 100
-initial-window-height-percent = 40
-
-# Keybinds to adjust height (Guake style)
-keybind = ctrl+up=resize_height:-10
-keybind = ctrl+down=resize_height:10
-
 # General Appearance
+theme = Adwaita Dark
 window-decoration = false
 
 # Keep Ghostty running in background for the toggle command to work
@@ -916,13 +909,13 @@ quit-after-last-window-closed = false
 
 2.  Set a custom GNOME shortcut for the toggle:
     - Name: `Ghostty Toggle`
-    - Command: `ghostty +toggle-quick-terminal`
+    - Command: `ghostty +toggle_quick_terminal`
     - Shortcut: `F12`
 
 Alternatively, set it via command line:
 
 ``` bash
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty-toggle/ command 'ghostty +toggle-quick-terminal'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty-toggle/ command 'ghostty +toggle_quick_terminal'
 ```
 
 ## Deno
@@ -947,7 +940,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`xnjrbo# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`tgbduc# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
