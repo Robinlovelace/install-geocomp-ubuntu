@@ -35,7 +35,7 @@ Any comments/suggestions: welcome
 
 ## Prerequisites
 
-- A working installation of Ubuntu 22.04, 'Jammy Jellyfish' on a computer you have access to
+- A working installation of Ubuntu 26.04, 'Resolute Raccoon' on a computer you have access to
 
 # Install key packages
 
@@ -83,7 +83,7 @@ sudo apt update
 sudo apt install git
 ```
 
-Previously I was on Git 2.25.1, now I'm on 2.40.0:
+Previously I was on Git 2.40.0, now I'm on 2.50.0:
 
 ```{bash}
 #| eval: true
@@ -134,14 +134,14 @@ apt update -qq && apt install --yes --no-install-recommends wget \
     ca-certificates gnupg
 wget -q -O- https://eddelbuettel.github.io/r2u/assets/dirk_eddelbuettel_key.asc \
     | tee -a /etc/apt/trusted.gpg.d/cranapt_key.asc
-echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu jammy main" \
+echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu $(lsb_release -cs) main" \
      > /etc/apt/sources.list.d/cranapt.list
 
 apt update -qq
 
 wget -q -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc \
     | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" \
+echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" \
     > /etc/apt/sources.list.d/cran_r.list
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
     67C2D66C4B1D4339 51716619E084DAB9
@@ -188,9 +188,12 @@ Rscript -e 'install.packages("languageserver")'
 RStudio:
 
 ```{bash}
-wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2023.03.0-386-amd64.deb
-sudo dpkg -i rstudio*
-rm -v rstudio*
+# Check for latest version at https://posit.co/download/rstudio-desktop/
+# Note: RStudio often uses previous LTS names (like 'noble' or 'jammy') in download URLs
+RSTUDIO_VER="2026.01.0-321"
+wget https://download2.rstudio.org/server/noble/amd64/rstudio-server-${RSTUDIO_VER}-amd64.deb -O /tmp/rstudio.deb
+sudo dpkg -i /tmp/rstudio.deb
+rm /tmp/rstudio.deb
 ```
 
 After installing RStudio you can open it by pressing the 'Windows button' and they typing RStudio.
@@ -214,6 +217,24 @@ git status
 git commit -am 'Update instructions with info on using RStudio'
 ```
 
+## Python for Geocomputation
+
+Python is a versatile language with a rich ecosystem for geographic data science. While `apt` provides some packages, using a modern environment manager like `pixi` (installed in the [Modern Data Stack](#modern-data-stack) section) is recommended for reproducibility.
+
+To quickly install core geographic packages in a new project:
+
+```bash
+pixi init my-geo-project
+cd my-geo-project
+pixi add geopandas rasterio shapely folium matplotlib
+```
+
+Alternatively, using standard `pip`:
+
+```{bash}
+python3 -m pip install --user geopandas rasterio shapely folium matplotlib
+```
+
 ## VS Code
 
 VS Code is a versatile and future-proof IDE.
@@ -234,17 +255,16 @@ code --install-extension ms-vscode-remote.remote-containers
 code --install-extension ritwickdey.LiveServer
 ```
 
-### Positron: a VS Code-compatible IDS
+### Positron: a VS Code-compatible IDE
 
-Get the latest pre-release with:
+Positron is an IDE for data science from Posit. Get the latest release for your system from https://github.com/posit-dev/positron/
 
 ```{bash}
-# Manually:
-# wget https://github.com/posit-dev/positron/releases/download/2025.01.0-39/Positron-2025.01.0-39.deb -O /tmp/positron.deb
-# sudo dpkg -i /tmp/positron.deb
-# Automatically:
-# Find latest release:
-curl https://github.com/posit-dev/positron/releases | grep "positron/releases/tag" | grep -oP '(?<=tag/)[^"]+' | head -n 1 | xargs -I {} wget https://github.com/posit-dev/positron/releases/download/{}/Positron-2025.01.0-39.deb -O /tmp/positron.deb
+# Automatically find and download latest release:
+LATEST_TAG=$(curl -s https://api.github.com/repos/posit-dev/positron/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+# Or set manually if needed:
+# LATEST_TAG="2026.01.0-123"
+wget https://github.com/posit-dev/positron/releases/download/${LATEST_TAG}/Positron-${LATEST_TAG}.deb -O /tmp/positron.deb
 sudo dpkg -i /tmp/positron.deb
 ```
 
@@ -276,7 +296,9 @@ code --install-extension github.copilot
 Install the Quarto command line tool:
 
 ```{bash}
-wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.27/quarto-1.7.27-linux-amd64.deb -O /tmp/quarto.deb
+# Check for latest version at https://github.com/quarto-dev/quarto-cli/releases
+QUARTO_VER="1.8.27"
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
 
@@ -303,53 +325,44 @@ wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
 Docker is a system platform that allows you to run applications in isolated environments called containers.
 Containers are similar to virtual machines, but they are more lightweight and efficient.
 
-Docker allows you to run applications in a sandboxed environment, which is useful for reproducibility and security.
-In essence: run anything, anywhere.
+### Installation
 
-Following instructions from https://docs.docker.com/engine/install/ubuntu/, first install the dependencies:
-
-```{bash}
-sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-```
-
-Then follow these commands:
+For Ubuntu 26.04 (Resolute Raccoon) and newer, you may need to use the `noble` repository as a fallback until the `resolute` repository is live:
 
 ```{bash}
-curl -fsSL https://test.docker.com -o test-docker.sh
-sudo sh test-docker.sh
+sudo apt-get install -y ca-certificates curl gnupg lsb-release
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository (using 'noble' as fallback for 'resolute')
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable" | sudo tee /etc/apt/sources.list.d/docker.list
+
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 ### Post installation steps for Docker
 
 The following steps enable you to run docker without `sudo`.
-As outlined at https://docs.docker.com/engine/install/linux-postinstall/ this does have security implications so it may be unwise to run these commands on important production servers or critical infrastructure.
-For a personal laptop that does not contain sensitive information the risks are low.
 
 ```{bash}
-sudo groupadd docker
+sudo groupadd -f docker
 # Add your user to the docker group:
 sudo usermod -aG docker $USER
+```
 
-# Log out and log back in so that your group membership is re-evaluated.
-# If you’re running Linux in a virtual machine, it may be necessary to restart the virtual machine for changes to take effect.
-# You can also run the following command to activate the changes to groups:
-newgrp docker
+**CRITICAL: You must LOG OUT and LOG BACK IN (or restart) for these changes to take effect.**
 
-# Verify that you can run docker commands without sudo.
+After logging back in, verify that you can run docker commands without `sudo`:
+
+```{bash}
 docker run hello-world
+```
 
-# If you initially ran Docker CLI commands using sudo before adding your user to the docker group, you may see the following error:
-# WARNING: Error loading config file: /home/user/.docker/config.json -
-# stat /home/user/.docker/config.json: permission denied
+If you encounter permission issues with the `~/.docker` directory, fix them as follows:
 
-# This error indicates that the permission settings for the ~/.docker/ directory are incorrect, due to having used the sudo command earlier.
-
-# To fix this problem, either remove the ~/.docker/ directory (it’s recreated automatically, but any custom settings are lost), or change its ownership and permissions using the following commands:
-
+```{bash}
 sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
 sudo chmod g+rwx "$HOME/.docker" -R
 ```
@@ -409,7 +422,7 @@ sudo cp qgis-archive-keyring.gpg /etc/apt/keyrings/qgis-archive-keyring.gpg
 
 # Types: deb deb-src
 # URIs: *repository*
-# Suites: *codename*
+# Suites: $(lsb_release -cs)
 # Architectures: amd64
 # Components: main
 # Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg
@@ -418,7 +431,7 @@ sudo cp qgis-archive-keyring.gpg /etc/apt/keyrings/qgis-archive-keyring.gpg
 
 # Types: deb deb-src
 # URIs: https://qgis.org/ubuntu-ltr
-# Suites: jammy
+# Suites: $(lsb_release -cs)
 # Architectures: amd64
 # Components: main
 # Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg
@@ -525,13 +538,23 @@ cargo install sd
 sd --help
 ```
 
-### exa
+### eza
 
-exa is a modern replacement for ls. It supports colors, file icons, git integration, and more.
+[eza](https://github.com/eza-community/eza) is a modern replacement for ls (the successor to the now-deprecated exa). It supports colors, file icons, git integration, and more.
 
 ```{bash}
-cargo install exa
-exa .
+cargo install eza
+eza .
+```
+
+### bat
+
+[bat](https://github.com/sharkdp/bat) is a cat(1) clone with syntax highlighting and Git integration.
+
+```{bash}
+sudo apt install bat
+# Note: On Ubuntu, the binary is named 'batcat'. You might want to alias it:
+# alias bat='batcat'
 ```
 
 ### dust
@@ -550,6 +573,28 @@ ripgrep_all is a tool that combines the power of ripgrep for all file formats.
 ```{bash}
 sudo apt install build-essential pandoc poppler-utils ffmpeg ripgrep cargo
 cargo install --locked ripgrep_all
+```
+
+## Modern Data Stack
+
+These tools are essential for high-performance data engineering and geocomputation in 2026.
+
+### DuckDB
+
+[DuckDB](https://duckdb.org/) is an in-process SQL OLAP database management system. It's incredibly fast for spatial data analysis when used with the [spatial extension](https://duckdb.org/docs/extensions/spatial).
+
+```{bash}
+curl https://install.duckdb.org | sh
+```
+
+### Pixi
+
+[Pixi](https://pixi.sh/) is a package management tool that allows you to install libraries and applications in a reproducible way. It's built on top of the Conda ecosystem but is written in Rust and is significantly faster.
+
+```{bash}
+curl -fsSL https://pixi.sh/install.sh | bash
+# Remember to source your .bashrc or restart your terminal:
+# source ~/.bashrc
 ```
 
 ## CopyQ
@@ -617,12 +662,99 @@ cd -
 
 ## guake
 
-
 ```{bash}
 sudo apt install guake
 ```
 
-See instructions here to get it working on Wayland: https://github.com/Guake/guake/issues/2127
+### Guake fix for Wayland
+
+If the `F12` key doesn't work to show Guake in a Wayland session (the default in Ubuntu 26.04), you need to set a custom global shortcut in GNOME:
+
+1.  Open **Settings** > **Keyboard** > **View and Customize Shortcuts**.
+2.  Go to **Custom Shortcuts** and click **+**.
+3.  Name: `Guake Toggle`
+4.  Command: `guake-toggle`
+5.  Shortcut: Press `F12`.
+
+Alternatively, try setting it from the command line:
+
+```{bash}
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ name 'Guake Toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ command 'guake-toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ binding 'F12'
+```
+
+### Zellij
+
+[Zellij](https://zellij.dev/) is a terminal multiplexer (like tmux) with a more user-friendly interface. It works great inside Guake.
+
+```{bash}
+# Download and install the latest binary (v0.43.1 as of 2026)
+wget https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-x86_64-unknown-linux-musl.tar.gz -O /tmp/zellij.tar.gz
+tar -xvf /tmp/zellij.tar.gz -C /tmp
+sudo mv /tmp/zellij /usr/local/bin/
+rm /tmp/zellij.tar.gz
+```
+
+**Pro Tip: Launch Zellij by default in Guake**
+
+1. Open `guake-prefs`.
+2. Under **Shell**, set the **Default interpreter** to `/usr/local/bin/zellij`.
+
+## Ghostty
+
+[Ghostty](https://ghostty.org/) is a lightning-fast, GPU-accelerated terminal emulator. In 2026, it is often recommended as a modern replacement for Guake or standard GNOME Terminal.
+
+```{bash}
+sudo snap install ghostty --classic
+```
+
+**Pro Tip: Launch Ghostty with a shortcut**
+
+To open Ghostty instantly, set a custom GNOME shortcut:
+
+1. Open **Settings** > **Keyboard** > **View and Customize Shortcuts**.
+2. Go to **Custom Shortcuts** and click **+**.
+3. Name: `Launch Ghostty`
+4. Command: `ghostty`
+5. Shortcut: Press `Ctrl+Alt+G`.
+
+**Pro Tip: Start Ghostty fullscreen by default**
+
+Add the following to `~/.config/ghostty/config`:
+
+```text
+fullscreen = true
+```
+
+**Pro Tip: Use Ghostty as a Guake replacement (Dropdown)**
+
+To get a full-width dropdown at the top of your screen on Ubuntu 26.04 (Wayland):
+
+1. Add the following to `~/.config/ghostty/config`:
+
+```text
+# Dropdown (Quick Terminal)
+keybind = global:f12=toggle_quick_terminal
+quick-terminal-position = top
+quick-terminal-size = 100%,40%
+quick-terminal-autohide = true
+
+# Standalone Window Behavior
+maximize = true
+theme = Adwaita Dark
+window-decoration = false
+
+# Keep Ghostty running in background for the toggle command to work
+quit-after-last-window-closed = false
+```
+
+2. Set a custom GNOME shortcut for the toggle (`F12`):
+   - Command: `ghostty +toggle_quick_terminal`
+
+3. Set a custom GNOME shortcut for a maximized standalone window (`Ctrl+Alt+G`):
+   - Command: `ghostty --maximize=true`
 
 ## Deno
 
@@ -655,7 +787,7 @@ cat signal-desktop-keyring.gpg | sudo tee /usr/share/keyrings/signal-desktop-key
 
 # 2. Add our repository to your list of repositories:
 echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\
-  sudo tee /etc/apt/sources.list.d/signal-xenial.list
+  sudo tee /etc/apt/sources.list.d/signal.list
 
 # 3. Update your package database and install Signal:
 sudo apt update && sudo apt install signal-desktop
@@ -742,10 +874,10 @@ sudo apt install syncthing
 
 ## Dropox
 
-See https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2024.04.17_amd64.deb
+See https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2026.01.01_amd64.deb
 
 ```{bash}
-wget https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2024.04.17_amd64.deb -O /tmp/dropbox.deb
+wget https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2026.01.01_amd64.deb -O /tmp/dropbox.deb
 sudo dpkg -i /tmp/dropbox.deb
 
 # gpg signature support:
@@ -810,11 +942,11 @@ apt-get autoremove -y
 apt-get autoclean -y
 ```
 
-https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md#distribution-ubuntu-2204
+https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md#distribution-ubuntu-2404
 
 ```{bash}
-wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_24.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_24.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
+wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_26.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_26.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
 sudo apt-get update
 sudo apt install --no-install-recommends --no-install-suggests onedrive
 ```
@@ -827,22 +959,13 @@ wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-de
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
 
-# Positron
+## Antigravity
 
-Positron is an IDE for data science.
-
-Get the latest release for your system from https://github.com/posit-dev/positron/
+For when you just need to float away from your geocomputation tasks for a moment. Inspired by [xkcd 353](https://xkcd.com/353/).
 
 ```{bash}
-wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
-sudo dpkg -i /tmp/positron.deb
+python3 -c "import antigravity"
 ```
-
-## Move your home directory to a separate partition
-
-It's good practice to keep your home directory on a separate partition.
-
-See [here](https://www.howtogeek.com/442101/how-to-move-your-linux-home-directory-to-another-hard-drive/) for instructions on how to do that.
 
 # Alternative projects
 
