@@ -10,7 +10,7 @@
     - [Rapid install of R packages](#rapid-install-of-r-packages)
   - [VS Code](#vs-code)
     - [Positron: a VS Code-compatible
-      IDS](#positron-a-vs-code-compatible-ids)
+      IDE](#positron-a-vs-code-compatible-ide)
     - [Executing bash commands in VS
       Code](#executing-bash-commands-in-vs-code)
     - [Installing key VS Code
@@ -65,9 +65,6 @@
   - [Slack](#slack)
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
-- [Positron](#positron)
-  - [Move your home directory to a separate
-    partition](#move-your-home-directory-to-a-separate-partition)
 - [Alternative projects](#alternative-projects)
 
 Inspired by a post on [installing commonly needed GIS software on
@@ -113,7 +110,7 @@ designed to make your life easier. Any comments/suggestions: welcome
 
 ## Prerequisites
 
-- A working installation of Ubuntu 22.04, ‘Jammy Jellyfish’ on a
+- A working installation of Ubuntu 26.04, ‘Resolute Raccoon’ on a
   computer you have access to
 
 # Install key packages
@@ -166,13 +163,13 @@ sudo apt update
 sudo apt install git
 ```
 
-Previously I was on Git 2.25.1, now I’m on 2.40.0:
+Previously I was on Git 2.40.0, now I’m on 2.50.0:
 
 ``` bash
 git --version
 ```
 
-    git version 2.49.0
+    git version 2.53.0
 
 ### Setting up Git
 
@@ -222,14 +219,14 @@ apt update -qq && apt install --yes --no-install-recommends wget \
     ca-certificates gnupg
 wget -q -O- https://eddelbuettel.github.io/r2u/assets/dirk_eddelbuettel_key.asc \
     | tee -a /etc/apt/trusted.gpg.d/cranapt_key.asc
-echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu jammy main" \
+echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu $(lsb_release -cs) main" \
      > /etc/apt/sources.list.d/cranapt.list
 
 apt update -qq
 
 wget -q -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc \
     | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/" \
+echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" \
     > /etc/apt/sources.list.d/cran_r.list
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
     67C2D66C4B1D4339 51716619E084DAB9
@@ -281,9 +278,12 @@ Rscript -e 'install.packages("languageserver")'
 RStudio:
 
 ``` bash
-wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2023.03.0-386-amd64.deb
-sudo dpkg -i rstudio*
-rm -v rstudio*
+# Check for latest version at https://posit.co/download/rstudio-desktop/
+# Note: RStudio often uses previous LTS names (like 'noble' or 'jammy') in download URLs
+RSTUDIO_VER="2026.01.0-321"
+wget https://download2.rstudio.org/server/noble/amd64/rstudio-server-${RSTUDIO_VER}-amd64.deb -O /tmp/rstudio.deb
+sudo dpkg -i /tmp/rstudio.deb
+rm /tmp/rstudio.deb
 ```
 
 After installing RStudio you can open it by pressing the ‘Windows
@@ -334,17 +334,17 @@ code --install-extension ms-vscode-remote.remote-containers
 code --install-extension ritwickdey.LiveServer
 ```
 
-### Positron: a VS Code-compatible IDS
+### Positron: a VS Code-compatible IDE
 
-Get the latest pre-release with:
+Positron is an IDE for data science from Posit. Get the latest release
+for your system from https://github.com/posit-dev/positron/
 
 ``` bash
-# Manually:
-# wget https://github.com/posit-dev/positron/releases/download/2025.01.0-39/Positron-2025.01.0-39.deb -O /tmp/positron.deb
-# sudo dpkg -i /tmp/positron.deb
-# Automatically:
-# Find latest release:
-curl https://github.com/posit-dev/positron/releases | grep "positron/releases/tag" | grep -oP '(?<=tag/)[^"]+' | head -n 1 | xargs -I {} wget https://github.com/posit-dev/positron/releases/download/{}/Positron-2025.01.0-39.deb -O /tmp/positron.deb
+# Automatically find and download latest release:
+LATEST_TAG=$(curl -s https://api.github.com/repos/posit-dev/positron/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+# Or set manually if needed:
+# LATEST_TAG="2026.01.0-123"
+wget https://github.com/posit-dev/positron/releases/download/${LATEST_TAG}/Positron-${LATEST_TAG}.deb -O /tmp/positron.deb
 sudo dpkg -i /tmp/positron.deb
 ```
 
@@ -380,7 +380,9 @@ code --install-extension github.copilot
 Install the Quarto command line tool:
 
 ``` bash
-wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.7.27/quarto-1.7.27-linux-amd64.deb -O /tmp/quarto.deb
+# Check for latest version at https://github.com/quarto-dev/quarto-cli/releases
+QUARTO_VER="1.8.27"
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
 
@@ -526,7 +528,7 @@ sudo cp qgis-archive-keyring.gpg /etc/apt/keyrings/qgis-archive-keyring.gpg
 
 # Types: deb deb-src
 # URIs: *repository*
-# Suites: *codename*
+# Suites: $(lsb_release -cs)
 # Architectures: amd64
 # Components: main
 # Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg
@@ -535,7 +537,7 @@ sudo cp qgis-archive-keyring.gpg /etc/apt/keyrings/qgis-archive-keyring.gpg
 
 # Types: deb deb-src
 # URIs: https://qgis.org/ubuntu-ltr
-# Suites: jammy
+# Suites: $(lsb_release -cs)
 # Architectures: amd64
 # Components: main
 # Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg
@@ -778,7 +780,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`jjoako# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`kvllda# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
@@ -792,7 +794,7 @@ wget -O- https://updates.signal.org/desktop/apt/keys.asc \| gpg –dearmor
 echo ‘deb \[arch=amd64
 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg\]
 https://updates.signal.org/desktop/apt xenial main’ \|  
-sudo tee /etc/apt/sources.list.d/signal-xenial.list
+sudo tee /etc/apt/sources.list.d/signal.list
 
 # 3. Update your package database and install Signal:
 
@@ -802,7 +804,6 @@ sudo apt update && sudo apt install signal-desktop
     ## Flameshot
 
     Flameshot is a powerful yet simple to use screenshot software.
-
 
 
     ::: {.cell}
@@ -888,10 +889,10 @@ sudo apt install syncthing
 ## Dropox
 
 See
-https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2024.04.17_amd64.deb
+https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2026.01.01_amd64.deb
 
 ``` bash
-wget https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2024.04.17_amd64.deb -O /tmp/dropbox.deb
+wget https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2026.01.01_amd64.deb -O /tmp/dropbox.deb
 sudo dpkg -i /tmp/dropbox.deb
 
 # gpg signature support:
@@ -973,11 +974,11 @@ apt-get autoremove -y
 apt-get autoclean -y
 ```
 
-https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md#distribution-ubuntu-2204
+https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md#distribution-ubuntu-2404
 
 ``` bash
-wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_24.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_24.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
+wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_26.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_26.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
 sudo apt-get update
 sudo apt install --no-install-recommends --no-install-suggests onedrive
 ```
@@ -989,26 +990,6 @@ sudo apt install gdebi
 wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
-
-# Positron
-
-Positron is an IDE for data science.
-
-Get the latest release for your system from
-https://github.com/posit-dev/positron/
-
-``` bash
-wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
-sudo dpkg -i /tmp/positron.deb
-```
-
-## Move your home directory to a separate partition
-
-It’s good practice to keep your home directory on a separate partition.
-
-See
-[here](https://www.howtogeek.com/442101/how-to-move-your-linux-home-directory-to-another-hard-drive/)
-for instructions on how to do that.
 
 # Alternative projects
 
