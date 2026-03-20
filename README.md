@@ -65,6 +65,7 @@
   - [Slack](#slack)
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
+  - [Antigravity](#antigravity)
 - [Alternative projects](#alternative-projects)
 
 Inspired by a post on [installing commonly needed GIS software on
@@ -780,7 +781,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`kvllda# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`ctfpbh# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
@@ -989,6 +990,15 @@ sudo apt install --no-install-recommends --no-install-suggests onedrive
 sudo apt install gdebi
 wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
+```
+
+## Antigravity
+
+For when you just need to float away from your geocomputation tasks for
+a moment. Inspired by [xkcd 353](https://xkcd.com/353/).
+
+``` bash
+python3 -c "import antigravity"
 ```
 
 # Alternative projects
