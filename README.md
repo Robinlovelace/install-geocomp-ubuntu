@@ -861,16 +861,33 @@ To open Ghostty instantly, set a custom GNOME shortcut:
 Add the following to `~/.config/ghostty/config`:
 
 ``` text
-window-state = fullscreen
+window-fullscreen = true
 ```
 
-Alternatively, try setting it from the command line:
+**Pro Tip: Use Ghostty as a Guake replacement (Dropdown)**
 
-``` bash
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/']"
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ name 'Launch Ghostty'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ command '/snap/bin/ghostty --gtk-single-instance=true --window-state=fullscreen'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/ghostty/ binding '<Control><Alt>g'
+To get a full-width dropdown at the top of your screen with adjustable
+height:
+
+``` text
+# Global hotkey for the dropdown (Quick Terminal)
+keybind = global:f12=toggle_quick_terminal
+
+# Quick Terminal Behavior
+quick-terminal-position = top
+quick-terminal-animation-duration = 0.2
+quick-terminal-autohide = true
+
+# Height and Width
+initial-window-width-percent = 100
+initial-window-height-percent = 40
+
+# Keybinds to adjust height (Guake style)
+keybind = ctrl+up=resize_height:-10
+keybind = ctrl+down=resize_height:10
+
+# General Appearance
+window-decoration = false
 ```
 
 ## Deno
@@ -895,7 +912,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`zbeaep# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`oxfaek# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
