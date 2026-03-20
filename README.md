@@ -49,6 +49,8 @@
       launcher](#make-zotero-available-to-the-launcher)
   - [guake](#guake)
     - [Guake fix for Wayland](#guake-fix-for-wayland)
+    - [Zellij](#zellij)
+  - [Ghostty](#ghostty)
   - [Deno](#deno)
   - [nvm](#nvm)
   - [Claude code](#claude-code)
@@ -813,6 +815,31 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ binding 'F12'
 ```
 
+### Zellij
+
+[Zellij](https://zellij.dev/) is a terminal multiplexer (like tmux) with
+a more user-friendly interface. It works great inside Guake.
+
+``` bash
+# Download and install the latest binary (v0.43.1 as of 2026)
+wget https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-x86_64-unknown-linux-musl.tar.gz -O /tmp/zellij.tar.gz
+tar -xvf /tmp/zellij.tar.gz -C /tmp
+sudo mv /tmp/zellij /usr/local/bin/
+rm /tmp/zellij.tar.gz
+# Run it with:
+# zellij
+```
+
+## Ghostty
+
+[Ghostty](https://ghostty.org/) is a lightning-fast, GPU-accelerated
+terminal emulator. In 2026, it is often recommended as a modern
+replacement for Guake or standard GNOME Terminal.
+
+``` bash
+sudo snap install ghostty --classic
+```
+
 ## Deno
 
 ``` bash
@@ -835,7 +862,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`lwaoup# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`xtowwr# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
