@@ -18,6 +18,7 @@
     - [Creating documents with Quarto](#creating-documents-with-quarto)
     - [LaTeX](#latex)
   - [Docker](#docker)
+    - [Installation](#installation)
     - [Post installation steps for
       Docker](#post-installation-steps-for-docker)
     - [Running devcontainer with VS
@@ -412,58 +413,46 @@ Docker is a system platform that allows you to run applications in
 isolated environments called containers. Containers are similar to
 virtual machines, but they are more lightweight and efficient.
 
-Docker allows you to run applications in a sandboxed environment, which
-is useful for reproducibility and security. In essence: run anything,
-anywhere.
+### Installation
 
-Following instructions from
-https://docs.docker.com/engine/install/ubuntu/, first install the
-dependencies:
+For Ubuntu 26.04 (Resolute Raccoon) and newer, you may need to use the
+`noble` repository as a fallback until the `resolute` repository is
+live:
 
 ``` bash
-sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-```
+sudo apt-get install -y ca-certificates curl gnupg lsb-release
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-Then follow these commands:
+# Add the repository (using 'noble' as fallback for 'resolute')
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable" | sudo tee /etc/apt/sources.list.d/docker.list
 
-``` bash
-curl -fsSL https://test.docker.com -o test-docker.sh
-sudo sh test-docker.sh
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 ### Post installation steps for Docker
 
-The following steps enable you to run docker without `sudo`. As outlined
-at https://docs.docker.com/engine/install/linux-postinstall/ this does
-have security implications so it may be unwise to run these commands on
-important production servers or critical infrastructure. For a personal
-laptop that does not contain sensitive information the risks are low.
+The following steps enable you to run docker without `sudo`.
 
 ``` bash
-sudo groupadd docker
+sudo groupadd -f docker
 # Add your user to the docker group:
 sudo usermod -aG docker $USER
 
-# Log out and log back in so that your group membership is re-evaluated.
-# If you’re running Linux in a virtual machine, it may be necessary to restart the virtual machine for changes to take effect.
-# You can also run the following command to activate the changes to groups:
-newgrp docker
+# IMPORTANT: You must log out and log back in for group changes to take effect.
+# Alternatively, you can run the following command to activate the changes in the current shell (if available):
+# newgrp docker
 
-# Verify that you can run docker commands without sudo.
+# Verify that you can run docker commands without sudo (after re-login).
 docker run hello-world
+```
 
-# If you initially ran Docker CLI commands using sudo before adding your user to the docker group, you may see the following error:
-# WARNING: Error loading config file: /home/user/.docker/config.json -
-# stat /home/user/.docker/config.json: permission denied
+If you encounter permission issues with the `~/.docker` directory, fix
+them as follows:
 
-# This error indicates that the permission settings for the ~/.docker/ directory are incorrect, due to having used the sudo command earlier.
-
-# To fix this problem, either remove the ~/.docker/ directory (it’s recreated automatically, but any custom settings are lost), or change its ownership and permissions using the following commands:
-
+``` bash
 sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
 sudo chmod g+rwx "$HOME/.docker" -R
 ```
@@ -781,7 +770,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`ctfpbh# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`mbrpaq# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:

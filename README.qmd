@@ -519,13 +519,23 @@ cargo install sd
 sd --help
 ```
 
-### exa
+### eza
 
-exa is a modern replacement for ls. It supports colors, file icons, git integration, and more.
+[eza](https://github.com/eza-community/eza) is a modern replacement for ls (the successor to the now-deprecated exa). It supports colors, file icons, git integration, and more.
 
 ```{bash}
-cargo install exa
-exa .
+cargo install eza
+eza .
+```
+
+### bat
+
+[bat](https://github.com/sharkdp/bat) is a cat(1) clone with syntax highlighting and Git integration.
+
+```{bash}
+sudo apt install bat
+# Note: On Ubuntu, the binary is named 'batcat'. You might want to alias it:
+# alias bat='batcat'
 ```
 
 ### dust
@@ -544,6 +554,28 @@ ripgrep_all is a tool that combines the power of ripgrep for all file formats.
 ```{bash}
 sudo apt install build-essential pandoc poppler-utils ffmpeg ripgrep cargo
 cargo install --locked ripgrep_all
+```
+
+## Modern Data Stack
+
+These tools are essential for high-performance data engineering and geocomputation in 2026.
+
+### DuckDB
+
+[DuckDB](https://duckdb.org/) is an in-process SQL OLAP database management system. It's incredibly fast for spatial data analysis when used with the [spatial extension](https://duckdb.org/docs/extensions/spatial).
+
+```{bash}
+curl https://install.duckdb.org | sh
+```
+
+### Pixi
+
+[Pixi](https://pixi.sh/) is a package management tool that allows you to install libraries and applications in a reproducible way. It's built on top of the Conda ecosystem but is written in Rust and is significantly faster.
+
+```{bash}
+curl -fsSL https://pixi.sh/install.sh | bash
+# Remember to source your .bashrc or restart your terminal:
+# source ~/.bashrc
 ```
 
 ## CopyQ
