@@ -706,7 +706,7 @@ To open Ghostty instantly, set a custom GNOME shortcut:
 Add the following to `~/.config/ghostty/config`:
 
 ```text
-window-start-fullscreen = true
+window-fullscreen = true
 ```
 
 Alternatively, try setting it from the command line:
