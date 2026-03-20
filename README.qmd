@@ -643,12 +643,28 @@ cd -
 
 ## guake
 
-
 ```{bash}
 sudo apt install guake
 ```
 
-See instructions here to get it working on Wayland: https://github.com/Guake/guake/issues/2127
+### Guake fix for Wayland
+
+If the `F12` key doesn't work to show Guake in a Wayland session (the default in Ubuntu 26.04), you need to set a custom global shortcut in GNOME:
+
+1.  Open **Settings** > **Keyboard** > **View and Customize Shortcuts**.
+2.  Go to **Custom Shortcuts** and click **+**.
+3.  Name: `Guake Toggle`
+4.  Command: `guake-toggle`
+5.  Shortcut: Press `F12`.
+
+Alternatively, try setting it from the command line:
+
+```{bash}
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ name 'Guake Toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ command 'guake-toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ binding 'F12'
+```
 
 ## Deno
 

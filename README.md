@@ -34,9 +34,13 @@
     - [ripgrep](#ripgrep)
     - [fd](#fd)
     - [sd](#sd)
-    - [exa](#exa)
+    - [eza](#eza)
+    - [bat](#bat)
     - [dust](#dust)
     - [ripgrep_all](#ripgrep_all)
+  - [Modern Data Stack](#modern-data-stack)
+    - [DuckDB](#duckdb)
+    - [Pixi](#pixi)
   - [CopyQ](#copyq)
   - [AppImage Launcher](#appimage-launcher)
   - [LogSeq](#logseq)
@@ -44,6 +48,7 @@
     - [Make Zotero available to the
       launcher](#make-zotero-available-to-the-launcher)
   - [guake](#guake)
+    - [Guake fix for Wayland](#guake-fix-for-wayland)
   - [Deno](#deno)
   - [nvm](#nvm)
   - [Claude code](#claude-code)
@@ -642,14 +647,26 @@ cargo install sd
 sd --help
 ```
 
-### exa
+### eza
 
-exa is a modern replacement for ls. It supports colors, file icons, git
-integration, and more.
+[eza](https://github.com/eza-community/eza) is a modern replacement for
+ls (the successor to the now-deprecated exa). It supports colors, file
+icons, git integration, and more.
 
 ``` bash
-cargo install exa
-exa .
+cargo install eza
+eza .
+```
+
+### bat
+
+[bat](https://github.com/sharkdp/bat) is a cat(1) clone with syntax
+highlighting and Git integration.
+
+``` bash
+sudo apt install bat
+# Note: On Ubuntu, the binary is named 'batcat'. You might want to alias it:
+# alias bat='batcat'
 ```
 
 ### dust
@@ -670,6 +687,35 @@ formats.
 ``` bash
 sudo apt install build-essential pandoc poppler-utils ffmpeg ripgrep cargo
 cargo install --locked ripgrep_all
+```
+
+## Modern Data Stack
+
+These tools are essential for high-performance data engineering and
+geocomputation in 2026.
+
+### DuckDB
+
+[DuckDB](https://duckdb.org/) is an in-process SQL OLAP database
+management system. It’s incredibly fast for spatial data analysis when
+used with the [spatial
+extension](https://duckdb.org/docs/extensions/spatial).
+
+``` bash
+curl https://install.duckdb.org | sh
+```
+
+### Pixi
+
+[Pixi](https://pixi.sh/) is a package management tool that allows you to
+install libraries and applications in a reproducible way. It’s built on
+top of the Conda ecosystem but is written in Rust and is significantly
+faster.
+
+``` bash
+curl -fsSL https://pixi.sh/install.sh | bash
+# Remember to source your .bashrc or restart your terminal:
+# source ~/.bashrc
 ```
 
 ## CopyQ
@@ -745,8 +791,27 @@ cd -
 sudo apt install guake
 ```
 
-See instructions here to get it working on Wayland:
-https://github.com/Guake/guake/issues/2127
+### Guake fix for Wayland
+
+If the `F12` key doesn’t work to show Guake in a Wayland session (the
+default in Ubuntu 26.04), you need to set a custom global shortcut in
+GNOME:
+
+1.  Open **Settings** \> **Keyboard** \> **View and Customize
+    Shortcuts**.
+2.  Go to **Custom Shortcuts** and click **+**.
+3.  Name: `Guake Toggle`
+4.  Command: `guake-toggle`
+5.  Shortcut: Press `F12`.
+
+Alternatively, try setting it from the command line:
+
+``` bash
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ name 'Guake Toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ command 'guake-toggle'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/guake/ binding 'F12'
+```
 
 ## Deno
 
@@ -770,7 +835,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`mbrpaq# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`lwaoup# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
