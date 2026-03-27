@@ -553,6 +553,9 @@ Install CopyQ by running the following command:
 
 ```{bash}
 sudo apt install copyq
+# Edit the config to work on wayland:
+# Exec=env QT_QPA_PLATFORM=xcb copyq
+nvim ~/.config/autostart/copyq.desktop
 ```
 
 This command installs the latest version of CopyQ and its dependencies on your system.
@@ -575,11 +578,22 @@ To install it just click on the latest '.AppImage' file in the latest releases, 
 ## Zotero
 
 ```{bash}
+sudo apt-get install libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
 wget -O zotero.tar.bz2 'https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64'
 tar -xjf zotero.tar.bz2 -C ~/Downloads/
 sudo mv ~/Downloads/Zotero_linux-x86_64 /opt/Zotero
 sudo ln -s /opt/Zotero/zotero /usr/local/bin/
-sudo apt-get install libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
+# Make it appear in launcher:
+#     Run the set_launcher_icon script from a terminal to update the .desktop file for that location. .desktop files require absolute paths for icons, so set_launcher_icon replaces the icon path with the current location of the icon based on where you've placed the directory:
+/opt/Zotero/set_launcher_icon
+#    Symlink zotero.desktop into ~/.local/share/applications/ (e.g., ln -s /opt/zotero/zotero.desktop ~/.local/share/applications/zotero.desktop)
+ln -s /opt/Zotero/zotero.desktop ~/.local/share/applications/zotero.desktop
+
+# Zotero should then appear either in your launcher or in the applications list when you click the grid icon (“Show Applications”), from which you can drag it to the launcher.
+
+# You may need to re-run set_launcher_icon after certain Zotero updates. If something isn't working, it may help to remove the current symlink (~/.local/share/applications/zotero.desktop), wait a few seconds for Zotero to disappear from the launcher, and recreate it. 
+
+
 ```
 
 Run Zotero with:
@@ -825,7 +839,8 @@ Positron is an IDE for data science.
 Get the latest release for your system from https://github.com/posit-dev/positron/
 
 ```{bash}
-wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
+# wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
+wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-173-x64.deb -O /tmp/positron.deb
 sudo dpkg -i /tmp/positron.deb
 ```
 
