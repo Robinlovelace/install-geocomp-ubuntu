@@ -51,6 +51,8 @@
   - [guake](#guake)
     - [Guake fix for Wayland](#guake-fix-for-wayland)
     - [Zellij](#zellij)
+  - [Disabling the Ubuntu Dock](#disabling-the-ubuntu-dock)
+  - [Kitty](#kitty)
   - [Ghostty](#ghostty)
   - [Deno](#deno)
   - [nvm](#nvm)
@@ -72,6 +74,7 @@
   - [Peak](#peak)
   - [Discord](#discord)
   - [Slack](#slack)
+  - [Telegram](#telegram)
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
   - [Antigravity](#antigravity)
@@ -114,6 +117,8 @@ programs it shows how to install are:
 - Recent versions of **GDAL** and **GEOS** C/C++ libraries
 - Python packages for Geographic Data Science
 - Rust, an upcoming systems language with impressive geo libs
+- **Kitty**, a fast, GPU-accelerated terminal emulator that works great
+  with Zellij
 
 All this can be a pain to install manually. The commands below are
 designed to make your life easier. Any comments/suggestions: welcome
@@ -859,6 +864,48 @@ rm /tmp/zellij.tar.gz
 2.  Under **Shell**, set the **Default interpreter** to
     `/usr/local/bin/zellij`.
 
+## Disabling the Ubuntu Dock
+
+Some people find the docking bar on the left (the Ubuntu Dock) annoying
+or simply prefer more screen real estate, especially when using a
+terminal multiplexer like Zellij or a dropdown terminal.
+
+To permanently disable the dock:
+
+``` bash
+gnome-extensions disable ubuntu-dock@ubuntu.com
+```
+
+To bring it back:
+
+``` bash
+gnome-extensions enable ubuntu-dock@ubuntu.com
+```
+
+## Kitty
+
+[Kitty](https://sw.kovidgoyal.net/kitty/) is a cross-platform,
+GPU-accelerated terminal emulator that is extremely customizable and
+feature-rich. It supports advanced terminal protocols and is great for
+tools like Zellij.
+
+``` bash
+sudo apt update && sudo apt install kitty
+```
+
+**Pro Tip: Use Kitty as a Dropdown (HUD) Terminal**
+
+On Ubuntu (GNOME), the most reliable way is using a GNOME Extension:
+
+1.  Install the **Quake-mode** extension.
+2.  In settings, set **Application** to `kitty` and **Shortcut** to
+    `F12`.
+3.  Add `hide_window_decorations yes` to `~/.config/kitty/kitty.conf`
+    for a clean look.
+
+Alternatively, use the native “Quick Access” feature (Kitty 0.42+): -
+Bind `F12` to the command: `kitty +kitten quick-access-terminal`
+
 ## Ghostty
 
 [Ghostty](https://ghostty.org/) is a lightning-fast, GPU-accelerated
@@ -939,7 +986,7 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`zwlpcj# NOTE: These instructions only work for 64-bit Debian-based
+\`\`\`vmnhfa# NOTE: These instructions only work for 64-bit Debian-based
 \# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
@@ -1117,6 +1164,12 @@ sudo dpkg -i discord.deb
 
 ``` bash
 sudo snap install slack --classic
+```
+
+## Telegram
+
+``` bash
+sudo snap install telegram-desktop
 ```
 
 ## OneDrive
