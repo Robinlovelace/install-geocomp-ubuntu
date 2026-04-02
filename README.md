@@ -72,10 +72,7 @@
   - [Telegram](#telegram)
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
-  - [Google Antigravity IDE](#google-antigravity-ide)
-    - [Installation via APT Repository
-      (Recommended)](#installation-via-apt-repository-recommended)
-    - [Portable Installation (Tarball)](#portable-installation-tarball)
+  - [Antigravity](#antigravity)
   - [Reproducing the Geocomputation with R
     book](#reproducing-the-geocomputation-with-r-book)
     - [Issues encountered and fixed during
@@ -1221,50 +1218,24 @@ wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-de
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
 
-## Google Antigravity IDE
-
-[Antigravity](https://antigravity.google) is an AI-powered,
-“agent-first” Integrated Development Environment (IDE) released by
-Google. It is a heavily modified fork of VS Code designed to orchestrate
-autonomous AI agents powered by Gemini.
-
-### Installation via APT Repository (Recommended)
-
-To install Antigravity on Ubuntu 26.04, use the official Google
-repository:
-
-``` bash
-# Add the Google Antigravity signing key
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | \
-sudo gpg --dearmor -o /etc/apt/keyrings/antigravity-repo-key.gpg
-
-# Add the repository to your sources
-echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | \
-sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
-
-# Install the IDE
-sudo apt update
-sudo apt install antigravity
-```
-
-### Portable Installation (Tarball)
-
-If you don’t have sudo access, you can download the standalone tarball:
-
-``` bash
-# Download and extract the latest version
-wget https://antigravity.google/download/linux/antigravity_latest_amd64.tar.gz -O /tmp/antigravity.tar.gz
-mkdir -p ~/opt/antigravity
-tar -xvf /tmp/antigravity.tar.gz -C ~/opt/antigravity --strip-components=1
-rm /tmp/antigravity.tar.gz
-
-# Run the IDE
-# ~/opt/antigravity/antigravity
-```
+## Antigravity
 
 For when you just need to float away from your geocomputation tasks for
-a moment. Inspired by [xkcd 353](https://xkcd.com/353/):
+a moment. Inspired by [xkcd 353](https://xkcd.com/353/), this is a
+classic Python easter egg.
+
+While there were rumors of an “Antigravity IDE” from Google in early
+2026, it turned out to be a clever April Fools’ prank. However, we’ve
+“installed” the classic joke as a command-line utility for you.
+
+To test your system’s gravity-defying capabilities:
+
+``` bash
+antigravity
+```
+
+If the command isn’t available, you can always run it directly from
+Python:
 
 ``` bash
 python3 -c "import antigravity"
