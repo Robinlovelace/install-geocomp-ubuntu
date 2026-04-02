@@ -43,6 +43,7 @@
     - [DuckDB](#duckdb)
     - [Pixi](#pixi)
   - [CopyQ](#copyq)
+    - [Windows+V Shortcut](#windowsv-shortcut)
   - [AppImage Launcher](#appimage-launcher)
   - [LogSeq](#logseq)
   - [Zotero](#zotero)
@@ -770,24 +771,39 @@ curl -fsSL https://pixi.sh/install.sh | bash
 
 ## CopyQ
 
+[CopyQ](https://github.com/hluk/CopyQ) is an advanced clipboard manager
+with editing and scripting features.
+
 ``` bash
 sudo add-apt-repository ppa:hluk/copyq
+sudo apt update
+sudo apt install copyq
 ```
 
-Install CopyQ by running the following command:
+### Windows+V Shortcut
+
+To make CopyQ feel like Windows (and many modern Linux desktops), you
+can bind `Windows+V` to show the clipboard history:
 
 ``` bash
-sudo apt install copyq
-# Edit the config to work on wayland:
-# Exec=env QT_QPA_PLATFORM=xcb copyq
-nvim ~/.config/autostart/copyq.desktop
+# 1. Create a custom keybinding entry for CopyQ
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/copyq/ name 'CopyQ'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/copyq/ command 'copyq menu'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/copyq/ binding '<Super>v'
+
+# 2. Link the entry to the list of active custom keybindings
+# Note: This appends to the existing list safely
+current_bindings=$(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings | sed "s/]//" | sed "s/\[//")
+new_binding="'/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/copyq/'"
+if [[ $current_bindings != *"$new_binding"* ]]; then
+    if [[ -z $current_bindings || $current_bindings == "@as []" ]]; then
+        combined="[$new_binding]"
+    else
+        combined="[$current_bindings, $new_binding]"
+    fi
+    gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "$combined"
+fi
 ```
-
-This command installs the latest version of CopyQ and its dependencies
-on your system.
-
-Once the installation is complete, you can launch CopyQ by typing copyq
-in the terminal or by searching for it in the Applications menu.
 
 ## AppImage Launcher
 
