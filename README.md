@@ -55,15 +55,10 @@
   - [Kitty](#kitty)
   - [Ghostty](#ghostty)
   - [Deno](#deno)
-  - [nvm](#nvm)
+  - [Node.js and nvm](#nodejs-and-nvm)
   - [Claude code](#claude-code)
   - [Signal](#signal)
-- [1. Install our official public software signing
-  key:](#1-install-our-official-public-software-signing-key)
-- [2. Add our repository to your list of
-  repositories:](#2-add-our-repository-to-your-list-of-repositories)
-- [3. Update your package database and install
-  Signal:](#3-update-your-package-database-and-install-signal)
+  - [Flameshot](#flameshot)
   - [Chrome](#chrome)
   - [Edge](#edge)
   - [Flatpak](#flatpak)
@@ -78,6 +73,10 @@
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
   - [Antigravity](#antigravity)
+  - [Reproducing the Geocomputation with R
+    book](#reproducing-the-geocomputation-with-r-book)
+    - [Issues encountered and fixed during
+      reproduction](#issues-encountered-and-fixed-during-reproduction)
 - [Alternative projects](#alternative-projects)
 
 Inspired by a post on [installing commonly needed GIS software on
@@ -226,41 +225,35 @@ commands:
 These instructions are from https://github.com/eddelbuettel/r2u
 
 First add the repository key so that `apt` knows it (this is optional
-but recommended)
+but recommended). Note that for Ubuntu 26.04 (Resolute), we use the
+`noble` CRAN repository as a fallback until the `resolute` one is fully
+live.
 
 ``` sh
-sudo -i
-apt update -qq && apt install --yes --no-install-recommends wget \
-    ca-certificates gnupg
-wget -q -O- https://eddelbuettel.github.io/r2u/assets/dirk_eddelbuettel_key.asc \
-    | tee -a /etc/apt/trusted.gpg.d/cranapt_key.asc
-echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu $(lsb_release -cs) main" \
-     > /etc/apt/sources.list.d/cranapt.list
+# Install dependencies
+sudo apt update -qq && sudo apt install --yes --no-install-recommends wget ca-certificates gnupg
 
-apt update -qq
+# Add r2u key and repository
+wget -q -O- https://eddelbuettel.github.io/r2u/assets/dirk_eddelbuettel_key.asc | sudo tee /etc/apt/trusted.gpg.d/cranapt_key.asc
+echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cranapt.list
 
-wget -q -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc \
-    | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" \
-    > /etc/apt/sources.list.d/cran_r.list
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
-    67C2D66C4B1D4339 51716619E084DAB9
-apt update -qq
-DEBIAN_FRONTEND=noninteractive apt install --yes --no-install-recommends \
-    r-base-core
+# Add CRAN key and repository (using noble as fallback for resolute)
+wget -q -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu noble-cran40/" | sudo tee /etc/apt/sources.list.d/cran_r.list
 
-echo "Package: *" > /etc/apt/preferences.d/99cranapt
-echo "Pin: release o=CRAN-Apt Project" >> /etc/apt/preferences.d/99cranapt
-echo "Pin: release l=CRAN-Apt Packages" >> /etc/apt/preferences.d/99cranapt
-echo "Pin-Priority: 700"  >> /etc/apt/preferences.d/99cranapt
+# Set up PIN preferences to prioritize r2u packages
+echo "Package: *" | sudo tee /etc/apt/preferences.d/99cranapt
+echo "Pin: release o=CRAN-Apt Project" | sudo tee -a /etc/apt/preferences.d/99cranapt
+echo "Pin: release l=CRAN-Apt Packages" | sudo tee -a /etc/apt/preferences.d/99cranapt
+echo "Pin-Priority: 700" | sudo tee -a /etc/apt/preferences.d/99cranapt
 
-apt install --yes --no-install-recommends python3-{dbus,gi,apt}
-## Then install bspm (as root) and enable it, and enable a speed optimization
-# Rscript -e 'install.packages("bspm")'
-# RHOME=$(R RHOME)
-# echo "suppressMessages(bspm::enable())" >> ${RHOME}/etc/Rprofile.site
-# echo "options(bspm.version.check=FALSE)" >> ${RHOME}/etc/Rprofile.site
-# exit # back to default user
+# Update and install R
+sudo apt update -qq
+DEBIAN_FRONTEND=noninteractive sudo apt install --yes --no-install-recommends r-base-core
+
+# Install bspm for system dependency management
+sudo apt install --yes --no-install-recommends python3-{dbus,gi,apt} r-cran-bspm
+sudo Rscript -e 'bspm::enable()'
 ```
 
 ### Rapid install of R packages
@@ -276,18 +269,41 @@ command line for binaries and the R console for installing packages that
 want to be compiled, to avoid issues like this:
 https://github.com/rocker-org/rocker-versioned2/issues/631
 
+#### Posit Package Manager (RSPM)
+
+For even faster R package installation from within R, you can use Posit
+Package Manager. Note that we are on a beta version of Ubuntu 26.04
+(Resolute Raccoon) which hasn’t been officially launched yet, so we use
+the `noble` (24.04) binaries as a fallback:
+
+``` r
+# Set RSPM as the default repository
+options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/noble/latest"))
+```
+
+To make this permanent, add it to your `~/.Rprofile`:
+
+``` bash
+echo 'options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/noble/latest"))' >> ~/.Rprofile
+```
+
 Get a load of great R packages with the following commands:
 
 ``` bash
-# System deps for cartography
-sudo apt install -y libgdal-dev libproj-dev libgeos-dev libudunits2-dev libv8-dev libnode-dev libcairo2-dev libnetcdf-dev
+# System deps for cartography and spatial data
+sudo apt install -y libgdal-dev libproj-dev libgeos-dev libudunits2-dev libnode-dev libcairo2-dev libnetcdf-dev
 sudo apt install -y libglu1-mesa-dev freeglut3-dev mesa-common-dev
-sudo apt install libharfbuzz-dev libfribidi-dev 
-# Extra packages for image manipulation
-sudo apt install -y libmagick++-dev libjq-dev libv8-dev libprotobuf-dev protobuf-compiler libsodium-dev imagemagick libgit2-dev
-# rspatial
-sudo apt install r-cran-sf r-cran-terra r-cran-mapedit r-cran-tmap r-cran-mapdeck r-cran-shinyjs 
-Rscript -e 'install.packages("languageserver")'
+sudo apt install -y libharfbuzz-dev libfribidi-dev 
+
+# Extra packages for image manipulation and data processing
+sudo apt install -y libmagick++-dev libjq-dev libprotobuf-dev protobuf-compiler libsodium-dev imagemagick libgit2-dev
+
+# R spatial stack via r2u (binary packages)
+# Note: some packages like tmap may need to be installed from CRAN if not yet in the r2u Resolute repo
+sudo apt install -y r-cran-sf r-cran-terra r-cran-lwgeom r-cran-mapview r-cran-mapdeck r-cran-shinyjs
+
+# Install remaining packages from CRAN (with binary fallback if possible)
+Rscript -e 'install.packages(c("tmap", "mapedit", "languageserver"), repos="https://packagemanager.posit.co/cran/__linux__/noble/latest")'
 ```
 
 RStudio:
@@ -760,6 +776,9 @@ Install CopyQ by running the following command:
 
 ``` bash
 sudo apt install copyq
+# Edit the config to work on wayland:
+# Exec=env QT_QPA_PLATFORM=xcb copyq
+nvim ~/.config/autostart/copyq.desktop
 ```
 
 This command installs the latest version of CopyQ and its dependencies
@@ -786,11 +805,20 @@ https://github.com/logseq/logseq/releases
 ## Zotero
 
 ``` bash
+sudo apt-get install libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
 wget -O zotero.tar.bz2 'https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64'
 tar -xjf zotero.tar.bz2 -C ~/Downloads/
 sudo mv ~/Downloads/Zotero_linux-x86_64 /opt/Zotero
 sudo ln -s /opt/Zotero/zotero /usr/local/bin/
-sudo apt-get install libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
+# Make it appear in launcher:
+#     Run the set_launcher_icon script from a terminal to update the .desktop file for that location. .desktop files require absolute paths for icons, so set_launcher_icon replaces the icon path with the current location of the icon based on where you've placed the directory:
+/opt/Zotero/set_launcher_icon
+#    Symlink zotero.desktop into ~/.local/share/applications/ (e.g., ln -s /opt/zotero/zotero.desktop ~/.local/share/applications/zotero.desktop)
+ln -s /opt/Zotero/zotero.desktop ~/.local/share/applications/zotero.desktop
+
+# Zotero should then appear either in your launcher or in the applications list when you click the grid icon (“Show Applications”), from which you can drag it to the launcher.
+
+# You may need to re-run set_launcher_icon after certain Zotero updates. If something isn't working, it may help to remove the current symlink (~/.local/share/applications/zotero.desktop), wait a few seconds for Zotero to disappear from the launcher, and recreate it. 
 ```
 
 Run Zotero with:
@@ -970,10 +998,18 @@ quit-after-last-window-closed = false
 curl -fsSL https://deno.land/x/install/install.sh | sh
 ```
 
-## nvm
+## Node.js and nvm
+
+[nvm](https://github.com/nvm-sh/nvm) (Node Version Manager) is the
+recommended way to install Node.js. It allows you to install and switch
+between different versions of Node.js easily.
 
 ``` bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+# Remember to source your .bashrc or restart your terminal:
+# source ~/.bashrc
+# Then install the latest version of Node.js:
+nvm install node
 ```
 
 ## Claude code
@@ -986,77 +1022,56 @@ npm install -g @anthropic-ai/claude-code
 
 Signal is an app for messaging and more.
 
-\`\`\`vmnhfa# NOTE: These instructions only work for 64-bit Debian-based
-\# Linux distributions such as Ubuntu, Mint etc.
+``` bash
+# NOTE: These instructions only work for 64-bit Debian-based
+# Linux distributions such as Ubuntu, Mint etc.
 
 # 1. Install our official public software signing key:
-
-wget -O- https://updates.signal.org/desktop/apt/keys.asc \| gpg –dearmor
-\> signal-desktop-keyring.gpg cat signal-desktop-keyring.gpg \| sudo tee
-/usr/share/keyrings/signal-desktop-keyring.gpg \> /dev/null
+wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signal-desktop-keyring.gpg
+cat signal-desktop-keyring.gpg | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
 
 # 2. Add our repository to your list of repositories:
-
-echo ‘deb \[arch=amd64
-signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg\]
-https://updates.signal.org/desktop/apt xenial main’ \|  
-sudo tee /etc/apt/sources.list.d/signal.list
+echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\
+  sudo tee /etc/apt/sources.list.d/signal.list
 
 # 3. Update your package database and install Signal:
-
 sudo apt update && sudo apt install signal-desktop
+```
 
+## Flameshot
 
-    ## Flameshot
+Flameshot is a powerful yet simple to use screenshot software.
 
-    Flameshot is a powerful yet simple to use screenshot software.
-
-
-    ::: {.cell}
-
-    ```{.bash .cell-code}
-    sudo apt install flameshot
-
-:::
+``` bash
+sudo apt install flameshot
+```
 
 ## Chrome
 
 ``` bash
 # Add the Google Chrome repository to your system
-echo "Adding Google Chrome repository..."
-wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome-keyring.gpg > /dev/null
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
 # Update your package list
-echo "Updating package list..."
-sudo apt-get update
+sudo apt update
 
 # Install Google Chrome
-echo "Installing Google Chrome..."
-sudo apt-get install google-chrome-stable -y
-
-echo "Google Chrome installation complete."
+sudo apt install google-chrome-stable -y
 ```
 
 ## Edge
 
 ``` bash
 # Add the Microsoft Edge repository to your system
-echo "Adding Microsoft Edge repository..."
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg
-sudo install -o root -g root -m 644 microsoft.asc.gpg /etc/apt/trusted.gpg.d/
-sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge-dev.list'
-rm microsoft.asc.gpg
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /usr/share/keyrings/microsoft-edge-keyring.gpg > /dev/null
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-edge-keyring.gpg] https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge.list
 
 # Update your package list
-echo "Updating package list..."
-sudo apt-get update
+sudo apt update
 
 # Install Microsoft Edge
-echo "Installing Microsoft Edge..."
-sudo apt-get install microsoft-edge-dev -y
-
-echo "Microsoft Edge installation complete."
+sudo apt install microsoft-edge-stable -y
 ```
 
 ## Flatpak
@@ -1209,8 +1224,42 @@ For when you just need to float away from your geocomputation tasks for
 a moment. Inspired by [xkcd 353](https://xkcd.com/353/).
 
 ``` bash
+# wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
+wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-173-x64.deb -O /tmp/positron.deb
+sudo dpkg -i /tmp/positron.deb
 python3 -c "import antigravity"
 ```
+
+## Reproducing the Geocomputation with R book
+
+To reproduce the book, follow these steps:
+
+``` bash
+gh repo clone geocompx/geocompr
+cd geocompr
+# Install dependencies (may require multiple runs to catch all indirect deps)
+Rscript -e 'pak::pak("geocompx/geocompkg", dependencies = TRUE)'
+# Render the book
+Rscript -e 'bookdown::render_book("index.Rmd")'
+```
+
+### Issues encountered and fixed during reproduction
+
+1.  **Missing Dependencies:** Several packages were missing from
+    `geocompkg`’s dependency list. You may need to manually install:
+    `downlit`, `rcartocolor`, `rmapshaper`, `smoothr`, `kableExtra`,
+    `magick`, `rnaturalearth`, `ggspatial`, `sfnetworks`, `mlr3tuning`,
+    `pROC`, `stplanr`, `z22`, `tree`, and `vegan`.
+2.  **External Pointer Error (Chapter 9):** In `09-mapping.Rmd`, the
+    `nz_elev` object’s C++ pointer could become invalid across R
+    sessions. Fixed by adding a `tryCatch` to reload the raster if
+    needed.
+3.  **Data.table Syntax Error (Chapter 12):** In `12-spatial-cv.Rmd`,
+    standard data.frame objects were being indexed using data.table
+    syntax. Fixed by switching to standard R indexing.
+4.  **Shared Library Issue:** `igraph` may fail to load if `libxml2`
+    versions don’t match. Reinstalling `igraph` with `pak` or from RSPM
+    binaries usually fixes this.
 
 # Alternative projects
 
