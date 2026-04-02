@@ -72,7 +72,9 @@
   - [Telegram](#telegram)
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
-  - [Antigravity](#antigravity)
+  - [Google Antigravity IDE](#google-antigravity-ide)
+    - [Installation for Linux](#installation-for-linux)
+    - [Antigravity (Python Easter Egg)](#antigravity-python-easter-egg)
   - [Reproducing the Geocomputation with R
     book](#reproducing-the-geocomputation-with-r-book)
     - [Issues encountered and fixed during
@@ -1218,24 +1220,52 @@ wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-de
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
 
-## Antigravity
+## Google Antigravity IDE
 
-For when you just need to float away from your geocomputation tasks for
-a moment. Inspired by [xkcd 353](https://xkcd.com/353/), this is a
-classic Python easter egg.
+[Antigravity](https://antigravity.google) is Google’s AI-powered,
+“agent-first” Integrated Development Environment (IDE) built for the
+next generation of software engineering.
 
-While there were rumors of an “Antigravity IDE” from Google in early
-2026, it turned out to be a clever April Fools’ prank. However, we’ve
-“installed” the classic joke as a command-line utility for you.
+### Installation for Linux
 
-To test your system’s gravity-defying capabilities:
+#### Debian/Ubuntu-based distributions
+
+Install the IDE via the official Google APT repository:
 
 ``` bash
-antigravity
+# 1. Add the repository to sources.list.d
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | \
+  sudo gpg --dearmor --yes -o /etc/apt/keyrings/antigravity-repo-key.gpg
+echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | \
+  sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
+
+# 2. Update the package cache and install
+sudo apt update
+sudo apt install antigravity
 ```
 
-If the command isn’t available, you can always run it directly from
-Python:
+#### RPM-based distributions (eg. Red Hat, Fedora, SUSE)
+
+``` bash
+# 1. Add the repository to /etc/yum.repos.d
+sudo tee /etc/yum.repos.d/antigravity.repo << EOL
+[antigravity-rpm]
+name=Antigravity RPM Repository
+baseurl=https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm
+enabled=1
+gpgcheck=0
+EOL
+
+# 2. Update the package cache and install
+sudo dnf makecache
+sudo dnf install antigravity
+```
+
+### Antigravity (Python Easter Egg)
+
+For when you just need to float away from your geocomputation tasks for
+a moment. Inspired by [xkcd 353](https://xkcd.com/353/):
 
 ``` bash
 python3 -c "import antigravity"
