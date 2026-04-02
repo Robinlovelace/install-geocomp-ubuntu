@@ -72,7 +72,10 @@
   - [Telegram](#telegram)
   - [OneDrive](#onedrive)
   - [OnlyOffice](#onlyoffice)
-  - [Antigravity](#antigravity)
+  - [Google Antigravity IDE](#google-antigravity-ide)
+    - [Installation via APT Repository
+      (Recommended)](#installation-via-apt-repository-recommended)
+    - [Portable Installation (Tarball)](#portable-installation-tarball)
   - [Reproducing the Geocomputation with R
     book](#reproducing-the-geocomputation-with-r-book)
     - [Issues encountered and fixed during
@@ -1218,15 +1221,52 @@ wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-de
 sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
 ```
 
-## Antigravity
+## Google Antigravity IDE
 
-For when you just need to float away from your geocomputation tasks for
-a moment. Inspired by [xkcd 353](https://xkcd.com/353/).
+[Antigravity](https://antigravity.google) is an AI-powered,
+“agent-first” Integrated Development Environment (IDE) released by
+Google. It is a heavily modified fork of VS Code designed to orchestrate
+autonomous AI agents powered by Gemini.
+
+### Installation via APT Repository (Recommended)
+
+To install Antigravity on Ubuntu 26.04, use the official Google
+repository:
 
 ``` bash
-# wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-64-x64.deb -O /tmp/positron.deb
-wget https://cdn.posit.co/positron/dailies/deb/x86_64/Positron-2025.04.0-173-x64.deb -O /tmp/positron.deb
-sudo dpkg -i /tmp/positron.deb
+# Add the Google Antigravity signing key
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://us-central1-apt.pkg.dev/doc/repo-signing-key.gpg | \
+sudo gpg --dearmor -o /etc/apt/keyrings/antigravity-repo-key.gpg
+
+# Add the repository to your sources
+echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" | \
+sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
+
+# Install the IDE
+sudo apt update
+sudo apt install antigravity
+```
+
+### Portable Installation (Tarball)
+
+If you don’t have sudo access, you can download the standalone tarball:
+
+``` bash
+# Download and extract the latest version
+wget https://antigravity.google/download/linux/antigravity_latest_amd64.tar.gz -O /tmp/antigravity.tar.gz
+mkdir -p ~/opt/antigravity
+tar -xvf /tmp/antigravity.tar.gz -C ~/opt/antigravity --strip-components=1
+rm /tmp/antigravity.tar.gz
+
+# Run the IDE
+# ~/opt/antigravity/antigravity
+```
+
+For when you just need to float away from your geocomputation tasks for
+a moment. Inspired by [xkcd 353](https://xkcd.com/353/):
+
+``` bash
 python3 -c "import antigravity"
 ```
 
