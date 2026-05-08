@@ -2,6 +2,7 @@
 
 
 - [Prerequisites](#prerequisites)
+- [System Stability and Performance](#system-stability-and-performance)
 - [Install key packages](#install-key-packages)
   - [GitHub’s gh CLI](#githubs-gh-cli)
     - [Setting up Git](#setting-up-git)
@@ -46,6 +47,8 @@
     - [Windows+V Shortcut](#windowsv-shortcut)
   - [AppImage Launcher](#appimage-launcher)
   - [LogSeq](#logseq)
+    - [Stable Version](#stable-version)
+    - [Nightly (Database Version)](#nightly-database-version)
   - [Zotero](#zotero)
     - [Make Zotero available to the
       launcher](#make-zotero-available-to-the-launcher)
@@ -60,6 +63,7 @@
   - [Claude code](#claude-code)
   - [Signal](#signal)
   - [Flameshot](#flameshot)
+  - [Firefox (Native .deb)](#firefox-native-deb)
   - [Chrome](#chrome)
   - [Edge](#edge)
   - [Flatpak](#flatpak)
@@ -130,6 +134,28 @@ designed to make your life easier. Any comments/suggestions: welcome
 - A working installation of Ubuntu 26.04, ‘Resolute Raccoon’ on a
   computer you have access to
 
+## System Stability and Performance
+
+If you are running memory-intensive applications (like modern browsers
+with many tabs, VS Code, and RStudio simultaneously), you may encounter
+“Out of Memory” (OOM) crashes. This is especially common if your swap
+space is small. You can increase your swap file to 16GB with the
+following commands:
+
+``` bash
+# Check current swap
+swapon --show
+# Increase swap to 16GB
+sudo swapoff /swap.img
+sudo rm /swap.img
+sudo fallocate -l 16G /swap.img
+sudo chmod 600 /swap.img
+sudo mkswap /swap.img
+sudo swapon /swap.img
+# Verify
+free -h
+```
+
 # Install key packages
 
 Fire up a terminal, e.g. with `Ctl-Alt-T` after booting Ubuntu, then
@@ -186,7 +212,7 @@ Previously I was on Git 2.40.0, now I’m on 2.50.0:
 git --version
 ```
 
-    git version 2.53.0
+    git version 2.54.0
 
 ### Setting up Git
 
@@ -815,10 +841,33 @@ snap install logseq
 
 ## LogSeq
 
-LogSeq is an application for storing notes, todo lists, and more. To
-install it just click on the latest ‘.AppImage’ file in the latest
-releases, download it, and it should be integrated by AppImage Launcher:
-https://github.com/logseq/logseq/releases
+LogSeq is an application for storing notes, todo lists, and more.
+
+### Stable Version
+
+You can install the latest stable version using the official automated
+script:
+
+``` bash
+curl -fsSL https://raw.githubusercontent.com/logseq/logseq/master/scripts/install-linux.sh | bash -s -- --user
+```
+
+### Nightly (Database Version)
+
+The Nightly version (Database version) introduces DB graphs and
+real-time collaboration. Because the asset naming for nightlies differs
+from stable releases, the standard script does not yet support it.
+Instead, use the GitHub CLI (`gh`) to download the latest nightly
+AppImage:
+
+``` bash
+# Download the latest nightly AppImage
+gh release download nightly -R logseq/logseq -p "*linux-x86_64*.AppImage" --clobber -O ~/Downloads/Logseq-Nightly.AppImage
+chmod +x ~/Downloads/Logseq-Nightly.AppImage
+
+# Launch it (AppImage Launcher will pick it up if installed)
+~/Downloads/Logseq-Nightly.AppImage
+```
 
 ## Zotero
 
@@ -1062,6 +1111,40 @@ Flameshot is a powerful yet simple to use screenshot software.
 
 ``` bash
 sudo apt install flameshot
+```
+
+## Firefox (Native .deb)
+
+Ubuntu 26.04 installs Firefox as a Snap by default, which can have
+higher memory overhead. For better performance and lower RAM usage, you
+can switch to the native .deb version from the official Mozilla Team
+PPA:
+
+``` bash
+# 1. Backup your Snap profile (just in case)
+cp -r ~/snap/firefox/common/.mozilla/firefox ~/firefox_profile_backup
+
+# 2. Add the Mozilla Team PPA
+sudo add-apt-repository ppa:mozillateam/ppa
+
+# 3. Prioritize the PPA over the Snap stub
+sudo tee /etc/apt/preferences.d/mozillateamppa << 'EOF'
+Package: firefox*
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+
+Package: firefox*
+Pin: release o=Ubuntu
+Pin-Priority: -1
+EOF
+
+# 4. Remove Snap and install native version
+sudo snap remove firefox
+sudo apt install -y --allow-downgrades firefox
+
+# 5. Restore your profile
+mkdir -p ~/.mozilla/firefox
+cp -r ~/firefox_profile_backup/* ~/.mozilla/firefox/
 ```
 
 ## Chrome
