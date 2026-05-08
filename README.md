@@ -64,6 +64,8 @@
   - [Signal](#signal)
   - [Flameshot](#flameshot)
   - [Firefox (Native .deb)](#firefox-native-deb)
+    - [Troubleshooting Firefox Launch
+      Issues](#troubleshooting-firefox-launch-issues)
   - [Chrome](#chrome)
   - [Edge](#edge)
   - [Flatpak](#flatpak)
@@ -1145,6 +1147,22 @@ sudo apt install -y --allow-downgrades firefox
 # 5. Restore your profile
 mkdir -p ~/.mozilla/firefox
 cp -r ~/firefox_profile_backup/* ~/.mozilla/firefox/
+```
+
+### Troubleshooting Firefox Launch Issues
+
+If Firefox fails to launch or shows
+`Sandbox: CanCreateUserNamespace() unshare(CLONE_NEWPID): EPERM` errors
+on Ubuntu 26.04, you may need to adjust AppArmor and sysctl settings:
+
+``` bash
+# 1. Allow unprivileged user namespaces (required for sandboxing)
+echo "kernel.apparmor_restrict_unprivileged_userns=0" | sudo tee /etc/sysctl.d/60-apparmor-namespace.conf
+sudo sysctl -p /etc/sysctl.d/60-apparmor-namespace.conf
+
+# 2. Disable the Firefox AppArmor profile (if it conflicts with the PPA version)
+sudo apt install -y apparmor-utils
+sudo aa-disable /etc/apparmor.d/usr.bin.firefox
 ```
 
 ## Chrome
