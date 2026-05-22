@@ -49,6 +49,7 @@
   - [LogSeq](#logseq)
     - [Stable Version](#stable-version)
     - [Nightly (Database Version)](#nightly-database-version)
+  - [Joplin](#joplin)
   - [Zotero](#zotero)
     - [Make Zotero available to the
       launcher](#make-zotero-available-to-the-launcher)
@@ -71,7 +72,8 @@
   - [Flatpak](#flatpak)
   - [KmCaster](#kmcaster)
   - [Syncthing](#syncthing)
-  - [Dropox](#dropox)
+  - [Dropbox](#dropbox)
+    - [Authentication and Auto-sync](#authentication-and-auto-sync)
   - [Rclone](#rclone)
   - [Peak](#peak)
   - [Discord](#discord)
@@ -871,6 +873,17 @@ chmod +x ~/Downloads/Logseq-Nightly.AppImage
 ~/Downloads/Logseq-Nightly.AppImage
 ```
 
+## Joplin
+
+Joplin is an open source note-taking app.
+
+``` bash
+# Install libfuse2 (required for AppImage on Ubuntu 26.04)
+sudo apt install -y libfuse2t64
+# Install Joplin
+wget -O - https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_and_update.sh | bash
+```
+
 ## Zotero
 
 ``` bash
@@ -1226,18 +1239,47 @@ photo albums, as shown below.
 sudo apt install syncthing
 ```
 
-## Dropox
+## Dropbox
 
-See
-https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2026.01.01_amd64.deb
+Dropbox is a file hosting service that offers cloud storage and file
+synchronization. The official client for Linux provides a background
+daemon for auto-sync.
 
 ``` bash
-wget https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2026.01.01_amd64.deb -O /tmp/dropbox.deb
+# Download and install the .deb package
+# Check for latest version at https://www.dropbox.com/install-linux
+DROPBOX_VER="2024.04.17"
+wget "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_${DROPBOX_VER}_amd64.deb" -O /tmp/dropbox.deb
 sudo dpkg -i /tmp/dropbox.deb
+sudo apt install -f -y  # Fix any missing dependencies
 
 # gpg signature support:
 sudo apt install python3-gpg
+
+# Install the actual sync daemon (this will download the latest daemon)
+# If you are in a terminal, it will provide a link to authenticate
+dropbox start -i
 ```
+
+### Authentication and Auto-sync
+
+To link your machine, copy the URL provided by `dropbox start -i` into a
+browser, log in, and click “Connect”. The daemon will then start syncing
+automatically to `~/Dropbox`.
+
+To ensure Dropbox starts on boot and manage its status:
+
+``` bash
+# Enable autostart
+dropbox autostart y
+
+# Check sync status
+dropbox status
+```
+
+If you have an **API Token** and want to use Dropbox via the command
+line or as a mount without the official daemon, use [Rclone](#rclone)
+(see below).
 
 ## Rclone
 
