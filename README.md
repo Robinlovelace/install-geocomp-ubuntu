@@ -43,6 +43,7 @@
   - [Modern Data Stack](#modern-data-stack)
     - [DuckDB](#duckdb)
     - [Pixi](#pixi)
+  - [btop](#btop)
   - [CopyQ](#copyq)
     - [Windows+V Shortcut](#windowsv-shortcut)
   - [AppImage Launcher](#appimage-launcher)
@@ -62,6 +63,7 @@
   - [Deno](#deno)
   - [Node.js and nvm](#nodejs-and-nvm)
   - [Claude code](#claude-code)
+  - [Hermes Desktop](#hermes-desktop)
   - [Signal](#signal)
   - [Flameshot](#flameshot)
   - [Firefox (Native .deb)](#firefox-native-deb)
@@ -210,13 +212,13 @@ sudo apt update
 sudo apt install git
 ```
 
-Previously I was on Git 2.40.0, now I’m on 2.50.0:
+Previously I was on Git 2.40.0, now I’m on 2.53.0:
 
 ``` bash
 git --version
 ```
 
-    git version 2.54.0
+    git version 2.53.0
 
 ### Setting up Git
 
@@ -257,36 +259,17 @@ commands:
 
 These instructions are from https://github.com/eddelbuettel/r2u
 
-First add the repository key so that `apt` knows it (this is optional
-but recommended). Note that for Ubuntu 26.04 (Resolute), we use the
-`noble` CRAN repository as a fallback until the `resolute` one is fully
-live.
+**Note for Ubuntu 26.04 (Resolute Raccoon):** The r2u repository
+currently only provides binaries for Ubuntu 24.04 (Noble), which depend
+on `libicu74`. Ubuntu 26.04 ships `libicu76`, making r2u packages
+uninstallable. Until r2u adds a Resolute repo, install R from the
+standard Ubuntu repositories and use Posit Package Manager (RSPM) for
+faster CRAN package installs.
 
 ``` sh
-# Install dependencies
-sudo apt update -qq && sudo apt install --yes --no-install-recommends wget ca-certificates gnupg
-
-# Add r2u key and repository
-wget -q -O- https://eddelbuettel.github.io/r2u/assets/dirk_eddelbuettel_key.asc | sudo tee /etc/apt/trusted.gpg.d/cranapt_key.asc
-echo "deb [arch=amd64] https://r2u.stat.illinois.edu/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/cranapt.list
-
-# Add CRAN key and repository (using noble as fallback for resolute)
-wget -q -O- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
-echo "deb [arch=amd64] https://cloud.r-project.org/bin/linux/ubuntu noble-cran40/" | sudo tee /etc/apt/sources.list.d/cran_r.list
-
-# Set up PIN preferences to prioritize r2u packages
-echo "Package: *" | sudo tee /etc/apt/preferences.d/99cranapt
-echo "Pin: release o=CRAN-Apt Project" | sudo tee -a /etc/apt/preferences.d/99cranapt
-echo "Pin: release l=CRAN-Apt Packages" | sudo tee -a /etc/apt/preferences.d/99cranapt
-echo "Pin-Priority: 700" | sudo tee -a /etc/apt/preferences.d/99cranapt
-
-# Update and install R
+# Install R from Ubuntu repositories
 sudo apt update -qq
-DEBIAN_FRONTEND=noninteractive sudo apt install --yes --no-install-recommends r-base-core
-
-# Install bspm for system dependency management
-sudo apt install --yes --no-install-recommends python3-{dbus,gi,apt} r-cran-bspm
-sudo Rscript -e 'bspm::enable()'
+sudo apt install --yes --no-install-recommends r-base-core r-base-dev
 ```
 
 ### Rapid install of R packages
@@ -331,22 +314,17 @@ sudo apt install -y libharfbuzz-dev libfribidi-dev
 # Extra packages for image manipulation and data processing
 sudo apt install -y libmagick++-dev libjq-dev libprotobuf-dev protobuf-compiler libsodium-dev imagemagick libgit2-dev
 
-# R spatial stack via r2u (binary packages)
-# Note: some packages like tmap may need to be installed from CRAN if not yet in the r2u Resolute repo
-sudo apt install -y r-cran-sf r-cran-terra r-cran-lwgeom r-cran-mapview r-cran-mapdeck r-cran-shinyjs
-
-# Install remaining packages from CRAN (with binary fallback if possible)
-Rscript -e 'install.packages(c("tmap", "mapedit", "languageserver"), repos="https://packagemanager.posit.co/cran/__linux__/noble/latest")'
+# R spatial stack (install from source via CRAN / RSPM)
+# Note: on Ubuntu 26.04 these must be compiled from source as r2u binaries are not yet available
+Rscript -e 'install.packages(c("sf", "terra", "lwgeom", "mapview", "mapdeck", "shinyjs", "tmap", "mapedit", "languageserver"), repos="https://packagemanager.posit.co/cran/__linux__/noble/latest")'
 ```
 
 RStudio:
 
 ``` bash
-# Check for latest version at https://posit.co/download/rstudio-desktop/
-# Note: RStudio often uses previous LTS names (like 'noble' or 'jammy') in download URLs
-RSTUDIO_VER="2026.01.0-321"
-wget https://download2.rstudio.org/server/noble/amd64/rstudio-server-${RSTUDIO_VER}-amd64.deb -O /tmp/rstudio.deb
-sudo dpkg -i /tmp/rstudio.deb
+RSTUDIO_VER="2026.05.0-218"
+wget https://download2.rstudio.org/server/jammy/amd64/rstudio-server-${RSTUDIO_VER}-amd64.deb -O /tmp/rstudio.deb
+sudo gdebi /tmp/rstudio.deb
 rm /tmp/rstudio.deb
 ```
 
@@ -428,7 +406,7 @@ for your system from https://github.com/posit-dev/positron/
 # Automatically find and download latest release:
 LATEST_TAG=$(curl -s https://api.github.com/repos/posit-dev/positron/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 # Or set manually if needed:
-# LATEST_TAG="2026.01.0-123"
+# LATEST_TAG="2026.05.2-3"
 wget https://github.com/posit-dev/positron/releases/download/${LATEST_TAG}/Positron-${LATEST_TAG}.deb -O /tmp/positron.deb
 sudo dpkg -i /tmp/positron.deb
 ```
@@ -466,7 +444,7 @@ Install the Quarto command line tool:
 
 ``` bash
 # Check for latest version at https://github.com/quarto-dev/quarto-cli/releases
-QUARTO_VER="1.8.27"
+QUARTO_VER="1.9.38"
 wget https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb -O /tmp/quarto.deb
 sudo dpkg -i /tmp/quarto.deb
 ```
@@ -799,6 +777,32 @@ curl -fsSL https://pixi.sh/install.sh | bash
 # source ~/.bashrc
 ```
 
+## btop
+
+[btop](https://github.com/aristocratos/btop) is a modern, beautiful
+system resource monitor that replaces `htop`. It shows CPU, memory,
+disk, and network usage with eye-catching visuals and a clean TUI.
+
+Remove legacy `htop` first:
+
+``` bash
+sudo apt remove htop -y
+```
+
+Install btop:
+
+``` bash
+sudo apt install btop -y
+# Or for the latest version directly from GitHub:
+# wget https://github.com/aristocratos/btop/releases/download/v1.4.7/btop-x86_64-unknown-linux-musl.tar.gz -O /tmp/btop.tar.gz
+# tar -xzf /tmp/btop.tar.gz -C /tmp
+# sudo cp /tmp/btop/bin/btop /usr/local/bin/
+# sudo mkdir -p /usr/local/share/btop/themes
+# sudo cp -r /tmp/btop/config /usr/local/share/btop/
+```
+
+Launch with `btop`. Arrow keys to navigate, `q` to quit.
+
 ## CopyQ
 
 [CopyQ](https://github.com/hluk/CopyQ) is an advanced clipboard manager
@@ -961,8 +965,8 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 a more user-friendly interface. It works great inside Guake.
 
 ``` bash
-# Download and install the latest binary (v0.43.1 as of 2026)
-wget https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-x86_64-unknown-linux-musl.tar.gz -O /tmp/zellij.tar.gz
+# Download and install the latest binary (v0.44.3 as of 2026)
+wget https://github.com/zellij-org/zellij/releases/download/v0.44.3/zellij-x86_64-unknown-linux-musl.tar.gz -O /tmp/zellij.tar.gz
 tar -xvf /tmp/zellij.tar.gz -C /tmp
 sudo mv /tmp/zellij /usr/local/bin/
 rm /tmp/zellij.tar.gz
@@ -1077,7 +1081,8 @@ quit-after-last-window-closed = false
 ## Deno
 
 ``` bash
-curl -fsSL https://deno.land/x/install/install.sh | sh
+# The official install script redirects to the latest release
+curl -fsSL https://deno.land/install.sh | sh
 ```
 
 ## Node.js and nvm
@@ -1087,7 +1092,7 @@ recommended way to install Node.js. It allows you to install and switch
 between different versions of Node.js easily.
 
 ``` bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 # Remember to source your .bashrc or restart your terminal:
 # source ~/.bashrc
 # Then install the latest version of Node.js:
@@ -1099,6 +1104,21 @@ nvm install node
 ``` bash
 npm install -g @anthropic-ai/claude-code
 ```
+
+## Hermes Desktop
+
+One-liner to install the latest [Hermes
+Desktop](https://github.com/fathah/hermes-desktop) from GitHub releases:
+
+``` bash
+# Install Hermes Desktop GUI
+wget -q https://github.com/fathah/hermes-desktop/releases/download/v0.5.1/hermes-desktop_0.5.1_amd64.deb -O /tmp/hermes-desktop.deb && sudo dpkg -i /tmp/hermes-desktop.deb
+
+# Install Hermes Agent CLI
+curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+```
+
+Launch desktop app with: `hermes-desktop`
 
 ## Signal
 
@@ -1193,6 +1213,10 @@ sudo apt install google-chrome-stable -y
 ```
 
 ## Edge
+
+Microsoft Edge is particularly useful if you use Microsoft accounts for
+work (e.g. Outlook, Teams, Azure) thanks to built-in SSO and enterprise
+sync.
 
 ``` bash
 # Add the Microsoft Edge repository to your system
