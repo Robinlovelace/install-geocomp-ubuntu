@@ -468,6 +468,19 @@ perl -mFile::Find /dev/null
 wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
 ```
 
+### Pandoc
+
+Pandoc is required for building R Markdown vignettes and Quarto documents.
+While Quarto bundles its own pandoc, the standalone version is needed for
+R package development (e.g., `R CMD build`, `devtools::check()`).
+Install the latest release from GitHub:
+
+``` bash
+PANDOC_VER=$(curl -s https://api.github.com/repos/jgm/pandoc/releases/latest | grep -oP '"tag_name": "\K[^"]+')
+curl -LO https://github.com/jgm/pandoc/releases/download/${PANDOC_VER}/pandoc-${PANDOC_VER}-1-amd64.deb -o /tmp/pandoc.deb
+sudo dpkg -i /tmp/pandoc.deb
+```
+
 ## Docker
 
 Docker is a system platform that allows you to run applications in
