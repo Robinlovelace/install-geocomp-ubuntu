@@ -19,6 +19,7 @@
       extensions](#installing-key-vs-code-extensions)
     - [Creating documents with Quarto](#creating-documents-with-quarto)
     - [LaTeX](#latex)
+    - [Pandoc](#pandoc)
   - [Docker](#docker)
     - [Installation](#installation)
     - [Post installation steps for
@@ -470,10 +471,10 @@ wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
 
 ### Pandoc
 
-Pandoc is required for building R Markdown vignettes and Quarto documents.
-While Quarto bundles its own pandoc, the standalone version is needed for
-R package development (e.g., `R CMD build`, `devtools::check()`).
-Install the latest release from GitHub:
+Pandoc is required for building R Markdown vignettes and Quarto
+documents. While Quarto bundles its own pandoc, the standalone version
+is needed for R package development (e.g., `R CMD build`,
+`devtools::check()`). Install the latest release from GitHub:
 
 ``` bash
 PANDOC_VER=$(curl -s https://api.github.com/repos/jgm/pandoc/releases/latest | grep -oP '"tag_name": "\K[^"]+')
@@ -854,10 +855,15 @@ fi
 
 ## AppImage Launcher
 
-Intuitive and time-saving management of AppImages.
+[AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher/)
+provides intuitive and time-saving management of AppImages.
+
+Install it from the latest beta release:
 
 ``` bash
-snap install logseq
+wget https://github.com/TheAssassin/AppImageLauncher/releases/download/v3.0.0-beta-3/appimagelauncher_3.0.0-beta-2-gha287.96cb937_amd64.deb -O /tmp/appimagelauncher.deb
+sudo apt install -y /tmp/appimagelauncher.deb
+rm /tmp/appimagelauncher.deb
 ```
 
 ## LogSeq

@@ -677,10 +677,14 @@ fi
 
 ## AppImage Launcher
 
-Intuitive and time-saving management of AppImages.
+[AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher/) provides intuitive and time-saving management of AppImages.
+
+Install it from the latest beta release:
 
 ```{bash}
-snap install logseq
+wget https://github.com/TheAssassin/AppImageLauncher/releases/download/v3.0.0-beta-3/appimagelauncher_3.0.0-beta-2-gha287.96cb937_amd64.deb -O /tmp/appimagelauncher.deb
+sudo apt install -y /tmp/appimagelauncher.deb
+rm /tmp/appimagelauncher.deb
 ```
 
 ## LogSeq
