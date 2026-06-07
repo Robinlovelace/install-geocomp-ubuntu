@@ -219,7 +219,7 @@ Previously I was on Git 2.40.0, now I’m on 2.53.0:
 git --version
 ```
 
-    git version 2.53.0
+    git version 2.54.0
 
 ### Setting up Git
 
@@ -320,12 +320,14 @@ sudo apt install -y libmagick++-dev libjq-dev libprotobuf-dev protobuf-compiler 
 Rscript -e 'install.packages(c("sf", "terra", "lwgeom", "mapview", "mapdeck", "shinyjs", "tmap", "mapedit", "languageserver"), repos="https://packagemanager.posit.co/cran/__linux__/noble/latest")'
 ```
 
-RStudio:
+RStudio Desktop (the GUI IDE, not the browser-based Server):
 
 ``` bash
+# Check for latest version at https://posit.co/download/rstudio-desktop/
 RSTUDIO_VER="2026.05.0-218"
-wget https://download2.rstudio.org/server/jammy/amd64/rstudio-server-${RSTUDIO_VER}-amd64.deb -O /tmp/rstudio.deb
-sudo gdebi /tmp/rstudio.deb
+sudo apt install -y gdebi-core
+wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-${RSTUDIO_VER}-amd64.deb -O /tmp/rstudio.deb
+sudo gdebi -n /tmp/rstudio.deb
 rm /tmp/rstudio.deb
 ```
 
@@ -1278,8 +1280,21 @@ photo albums, as shown below.
 
 ![](syncthing.png)
 
+To install the latest version from the official repository:
+
 ``` bash
+sudo mkdir -p /etc/apt/keyrings
+sudo curl -L -o /etc/apt/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+echo "deb [signed-by=/etc/apt/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+sudo apt update
 sudo apt install syncthing
+```
+
+To enable it as a service for your user:
+
+``` bash
+sudo systemctl enable syncthing@$USER.service
+sudo systemctl start syncthing@$USER.service
 ```
 
 ## Dropbox
