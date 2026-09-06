@@ -48,6 +48,7 @@
   - [CopyQ](#copyq)
     - [Windows+V Shortcut](#windowsv-shortcut)
   - [AppImage Launcher](#appimage-launcher)
+  - [Bambu Studio](#bambu-studio)
   - [LogSeq](#logseq)
     - [Stable Version](#stable-version)
     - [Nightly (Database Version)](#nightly-database-version)
@@ -382,7 +383,8 @@ python3 -m pip install --user geopandas rasterio shapely folium matplotlib
 
 ## VS Code
 
-VS Code is a versatile and future-proof IDE.
+VS Code is a versatile and future-proof IDE. At the time of writing the
+latest stable release was **v1.124.0** (June 2026).
 
 ``` bash
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
@@ -391,13 +393,11 @@ rm packages.microsoft.gpg
 sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
 sudo apt update
 sudo apt-get install code
-code --install-extension ms-vscode-remote.remote-containers
-# Install the Python extension:
+# Core extensions for data science and development:
 code --install-extension ms-python.python
-# Remote containers:
 code --install-extension ms-vscode-remote.remote-containers
-# Install ritwickdey.LiveServer:
 code --install-extension ritwickdey.LiveServer
+code --install-extension github.copilot
 ```
 
 ### Positron: a VS Code-compatible IDE
@@ -867,6 +867,34 @@ wget https://github.com/TheAssassin/AppImageLauncher/releases/download/v3.0.0-be
 sudo apt install -y /tmp/appimagelauncher.deb
 rm /tmp/appimagelauncher.deb
 ```
+
+## Bambu Studio
+
+[Bambu Studio](https://bambulab.com/en-eu/download/studio) is the
+official slicer for Bambu Lab 3D printers. It is available as an
+AppImage for Linux.
+
+Download and install the latest Ubuntu AppImage from GitHub releases:
+
+``` bash
+# Create Applications directory if it doesn't exist
+mkdir -p ~/Applications
+
+# Download the latest AppImage for Ubuntu 24.04+
+cd ~/Applications
+curl -L -o BambuStudio.AppImage \
+  "https://github.com/bambulab/BambuStudio/releases/download/v02.07.00.55/BambuStudio_ubuntu-24.04-v02.07.00.55-20260514170313.AppImage"
+
+# Make it executable
+chmod +x BambuStudio.AppImage
+
+# Run it (AppImage Launcher will integrate it if installed)
+./BambuStudio.AppImage
+```
+
+To find the latest release URL, visit the [Bambu Studio GitHub releases
+page](https://github.com/bambulab/BambuStudio/releases) and copy the
+AppImage link for your Ubuntu version.
 
 ## LogSeq
 
