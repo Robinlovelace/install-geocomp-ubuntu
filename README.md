@@ -509,8 +509,8 @@ The following steps enable you to run docker without `sudo`.
 ``` bash
 sudo groupadd -f docker
 sudo usermod -aG docker $USER
-# Activate group immediately in current shell (log out and back in for full session persistence):
-newgrp docker
+# Grant immediate access in current sessions without logging out (usermod persists after re-login):
+sudo setfacl -m "user:$USER:rw" /var/run/docker.sock
 ```
 
 Verify that you can run docker commands without `sudo`:
