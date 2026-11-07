@@ -43,7 +43,7 @@
     - [ripgrep_all](#ripgrep_all)
   - [Modern Data Stack](#modern-data-stack)
     - [DuckDB](#duckdb)
-    - [Pixi](#pixi)
+    - [Pixi and uv](#pixi-and-uv)
   - [btop](#btop)
   - [CopyQ](#copyq)
     - [Windows+V Shortcut](#windowsv-shortcut)
@@ -54,8 +54,6 @@
     - [Nightly (Database Version)](#nightly-database-version)
   - [Joplin](#joplin)
   - [Zotero](#zotero)
-    - [Make Zotero available to the
-      launcher](#make-zotero-available-to-the-launcher)
   - [guake](#guake)
     - [Guake fix for Wayland](#guake-fix-for-wayland)
     - [Zellij](#zellij)
@@ -220,7 +218,7 @@ Previously I was on Git 2.40.0, now I’m on 2.53.0:
 git --version
 ```
 
-    git version 2.54.0
+    git version 2.53.0
 
 ### Setting up Git
 
@@ -236,8 +234,8 @@ git config --global init.defaultBranch main
 ### dra
 
 ``` bash
-wget $(curl -s https://api.github.com/repos/devmatteini/dra/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4) -O /tmp/dra.deb
-sudo dpkg -i /tmp/dra.deb
+gh release download -R devmatteini/dra -p "*amd64.deb" -O /tmp/dra.deb --clobber
+sudo apt install -y /tmp/dra.deb && rm /tmp/dra.deb
 ```
 
 That allows you to download assets with commands such as:
@@ -259,19 +257,20 @@ reproducible documents, R+RStudio is hard to beat, especially if you’re
 just starting out with data science. Install them with the following
 commands:
 
-These instructions are from https://github.com/eddelbuettel/r2u
-
-**Note for Ubuntu 26.04 (Resolute Raccoon):** The r2u repository
-currently only provides binaries for Ubuntu 24.04 (Noble), which depend
-on `libicu74`. Ubuntu 26.04 ships `libicu76`, making r2u packages
-uninstallable. Until r2u adds a Resolute repo, install R from the
-standard Ubuntu repositories and use Posit Package Manager (RSPM) for
-faster CRAN package installs.
+These instructions are from https://github.com/eddelbuettel/r2u (which
+now supports Ubuntu 26.04 `resolute` and installs **R 4.5.3** along with
+`bspm` so `install.packages()` installs pre-compiled Ubuntu `.deb`
+binaries automatically):
 
 ``` sh
-# Install R from Ubuntu repositories
-sudo apt update -qq
-sudo apt install --yes --no-install-recommends r-base-core r-base-dev
+curl -fsSL https://raw.githubusercontent.com/eddelbuettel/r2u/master/inst/scripts/add_cranapt_resolute.sh | sudo bash
+```
+
+Alternatively, to install R (**4.5.2**) from the standard Ubuntu
+repositories without `r2u`:
+
+``` sh
+sudo apt update -qq && sudo apt install --yes --no-install-recommends r-base-core r-base-dev
 ```
 
 ### Rapid install of R packages
@@ -289,47 +288,39 @@ https://github.com/rocker-org/rocker-versioned2/issues/631
 
 #### Posit Package Manager (RSPM)
 
-For even faster R package installation from within R, you can use Posit
-Package Manager. Note that we are on a beta version of Ubuntu 26.04
-(Resolute Raccoon) which hasn’t been officially launched yet, so we use
-the `noble` (24.04) binaries as a fallback:
+For fast pre-compiled R package installation from within R on Ubuntu
+26.04 (`resolute`), you can also use Posit Package Manager:
 
 ``` r
-# Set RSPM as the default repository
-options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/noble/latest"))
+# Set RSPM as the default repository for Ubuntu 26.04 (resolute)
+options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/resolute/latest"))
 ```
 
 To make this permanent, add it to your `~/.Rprofile`:
 
 ``` bash
-echo 'options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/noble/latest"))' >> ~/.Rprofile
+echo 'options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/resolute/latest"))' >> ~/.Rprofile
 ```
 
 Get a load of great R packages with the following commands:
 
 ``` bash
-# System deps for cartography and spatial data
-sudo apt install -y libgdal-dev libproj-dev libgeos-dev libudunits2-dev libnode-dev libcairo2-dev libnetcdf-dev
-sudo apt install -y libglu1-mesa-dev freeglut3-dev mesa-common-dev
-sudo apt install -y libharfbuzz-dev libfribidi-dev 
+# System deps (only needed if compiling spatial/graphics packages from source without r2u)
+sudo apt install -y libgdal-dev libproj-dev libgeos-dev libudunits2-dev libnode-dev libcairo2-dev libnetcdf-dev \
+  libglu1-mesa-dev freeglut3-dev mesa-common-dev libharfbuzz-dev libfribidi-dev \
+  libmagick++-dev libjq-dev libprotobuf-dev protobuf-compiler libsodium-dev imagemagick libgit2-dev
 
-# Extra packages for image manipulation and data processing
-sudo apt install -y libmagick++-dev libjq-dev libprotobuf-dev protobuf-compiler libsodium-dev imagemagick libgit2-dev
-
-# R spatial stack (install from source via CRAN / RSPM)
-# Note: on Ubuntu 26.04 these must be compiled from source as r2u binaries are not yet available
-Rscript -e 'install.packages(c("sf", "terra", "lwgeom", "mapview", "mapdeck", "shinyjs", "tmap", "mapedit", "languageserver"), repos="https://packagemanager.posit.co/cran/__linux__/noble/latest")'
+# Install core R spatial stack (uses r2u or RSPM resolute binaries)
+Rscript -e 'install.packages(c("sf", "terra", "lwgeom", "mapview", "mapdeck", "shinyjs", "tmap", "mapedit", "languageserver"))'
 ```
 
 RStudio Desktop (the GUI IDE, not the browser-based Server):
 
 ``` bash
 # Check for latest version at https://posit.co/download/rstudio-desktop/
-RSTUDIO_VER="2026.05.0-218"
-sudo apt install -y gdebi-core
+RSTUDIO_VER="2026.10.1-239"
 wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-${RSTUDIO_VER}-amd64.deb -O /tmp/rstudio.deb
-sudo gdebi -n /tmp/rstudio.deb
-rm /tmp/rstudio.deb
+sudo apt install -y /tmp/rstudio.deb && rm /tmp/rstudio.deb
 ```
 
 After installing RStudio you can open it by pressing the ‘Windows
@@ -364,35 +355,35 @@ git commit -am 'Update instructions with info on using RStudio'
 
 Python is a versatile language with a rich ecosystem for geographic data
 science. While `apt` provides some packages, using a modern environment
-manager like `pixi` (installed in the [Modern Data
-Stack](#modern-data-stack) section) is recommended for reproducibility.
+manager like `pixi` or `uv` (installed in the [Modern Data
+Stack](#modern-data-stack) section) is recommended for reproducibility
+and avoids Ubuntu 26.04 PEP 668 (`externally-managed-environment`)
+errors.
 
-To quickly install core geographic packages in a new project:
+To quickly install core geographic packages in a new project with
+`pixi`:
 
 ``` bash
-pixi init my-geo-project
-cd my-geo-project
+pixi init my-geo-project && cd my-geo-project
 pixi add geopandas rasterio shapely folium matplotlib
 ```
 
-Alternatively, using standard `pip`:
+Alternatively, using [`uv`](https://docs.astral.sh/uv/):
 
 ``` bash
-python3 -m pip install --user geopandas rasterio shapely folium matplotlib
+uv init my-geo-project && cd my-geo-project
+uv add geopandas rasterio shapely folium matplotlib
 ```
 
 ## VS Code
 
 VS Code is a versatile and future-proof IDE. At the time of writing the
-latest stable release was **v1.124.0** (June 2026).
+latest stable release was **v1.145.2** (November 2026).
 
 ``` bash
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
-rm packages.microsoft.gpg
-sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-sudo apt update
-sudo apt-get install code
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/keyrings/microsoft.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+sudo apt update && sudo apt install -y code
 # Core extensions for data science and development:
 code --install-extension ms-python.python
 code --install-extension ms-vscode-remote.remote-containers
@@ -406,12 +397,9 @@ Positron is an IDE for data science from Posit. Get the latest release
 for your system from https://github.com/posit-dev/positron/
 
 ``` bash
-# Automatically find and download latest release:
-LATEST_TAG=$(curl -s https://api.github.com/repos/posit-dev/positron/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-# Or set manually if needed:
-# LATEST_TAG="2026.05.2-3"
-wget https://github.com/posit-dev/positron/releases/download/${LATEST_TAG}/Positron-${LATEST_TAG}.deb -O /tmp/positron.deb
-sudo dpkg -i /tmp/positron.deb
+# Automatically find and download latest release (e.g. 2026.11.0-308):
+gh release download -R posit-dev/positron -p "Positron-*-x64.deb" -p "Positron-*.deb" -O /tmp/positron.deb --clobber
+sudo apt install -y /tmp/positron.deb && rm /tmp/positron.deb
 ```
 
 ### Executing bash commands in VS Code
@@ -438,18 +426,18 @@ editor, as shown in the following screenshot:
 
 ``` bash
 code --install-extension reditorsupport.r
-code --install-extension github.copilot
 ```
 
 ### Creating documents with Quarto
 
-Install the Quarto command line tool:
+Install the Quarto command line tool (or via
+`pixi global install quarto`):
 
 ``` bash
 # Check for latest version at https://github.com/quarto-dev/quarto-cli/releases
-QUARTO_VER="1.9.38"
+QUARTO_VER="1.11.9"
 wget https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VER}/quarto-${QUARTO_VER}-linux-amd64.deb -O /tmp/quarto.deb
-sudo dpkg -i /tmp/quarto.deb
+sudo apt install -y /tmp/quarto.deb && rm /tmp/quarto.deb
 ```
 
 Install the Quarto R package:
@@ -476,12 +464,12 @@ wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh
 Pandoc is required for building R Markdown vignettes and Quarto
 documents. While Quarto bundles its own pandoc, the standalone version
 is needed for R package development (e.g., `R CMD build`,
-`devtools::check()`). Install the latest release from GitHub:
+`devtools::check()`). Install the latest release (**3.13**) from GitHub:
 
 ``` bash
 PANDOC_VER=$(curl -s https://api.github.com/repos/jgm/pandoc/releases/latest | grep -oP '"tag_name": "\K[^"]+')
-curl -LO https://github.com/jgm/pandoc/releases/download/${PANDOC_VER}/pandoc-${PANDOC_VER}-1-amd64.deb -o /tmp/pandoc.deb
-sudo dpkg -i /tmp/pandoc.deb
+curl -fLo /tmp/pandoc.deb https://github.com/jgm/pandoc/releases/download/${PANDOC_VER}/pandoc-${PANDOC_VER}-1-amd64.deb
+sudo apt install -y /tmp/pandoc.deb && rm /tmp/pandoc.deb
 ```
 
 ## Docker
@@ -492,18 +480,23 @@ virtual machines, but they are more lightweight and efficient.
 
 ### Installation
 
-For Ubuntu 26.04 (Resolute Raccoon) and newer, you may need to use the
-`noble` repository as a fallback until the `resolute` repository is
-live:
+Install Docker Engine (**v29.9.3**) from the official Ubuntu 26.04
+(`resolute`) APT repository:
 
 ``` bash
-sudo apt-get install -y ca-certificates curl gnupg lsb-release
+sudo apt-get update && sudo apt-get install -y ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add the repository (using 'noble' as fallback for 'resolute')
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable" | sudo tee /etc/apt/sources.list.d/docker.list
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
 
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -515,15 +508,12 @@ The following steps enable you to run docker without `sudo`.
 
 ``` bash
 sudo groupadd -f docker
-# Add your user to the docker group:
 sudo usermod -aG docker $USER
+# Activate group immediately in current shell (log out and back in for full session persistence):
+newgrp docker
 ```
 
-**CRITICAL: You must LOG OUT and LOG BACK IN (or restart) for these
-changes to take effect.**
-
-After logging back in, verify that you can run docker commands without
-`sudo`:
+Verify that you can run docker commands without `sudo`:
 
 ``` bash
 docker run hello-world
@@ -583,72 +573,30 @@ docker run -it --rm \
 
 ## QGIS
 
-From: https://github.com/geocompx/docker/blob/master/qgis/Dockerfile
+Ubuntu 26.04 ships **QGIS 3.40.15** (along with **GDAL 3.12.2** and
+**GEOS 3.14.1**) directly in `universe`:
 
 ``` bash
-# To use the qgis archive you have to first add the archive’s repository public key:
-wget https://download.qgis.org/downloads/qgis-archive-keyring.gpg
-gpg --no-default-keyring --keyring ./qgis-archive-keyring.gpg --list-keys
+sudo apt update && sudo apt install -y qgis qgis-plugin-grass python3-qgis
+```
 
-# After you have verified the output you can install the key with:
-sudo mkdir -m755 -p /etc/apt/keyrings  # not needed since apt version 2.4.0 like Debian 12 and Ubuntu 22 or newer
-sudo cp qgis-archive-keyring.gpg /etc/apt/keyrings/qgis-archive-keyring.gpg
+To install the latest upstream Long Term Release (**QGIS 3.44.15 LTR**,
+or use `https://qgis.org/ubuntu` for **QGIS 4.2.3**) from the official
+QGIS `resolute` repository:
 
-# Alternatively you can download the key directly without manual verification:
-
-# Types: deb deb-src
-# URIs: *repository*
-# Suites: $(lsb_release -cs)
-# Architectures: amd64
-# Components: main
-# Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg
-
-# With the keyring in place you can add the repository as /etc/apt/sources.list.d/qgis.sources with following content:
-
-# Types: deb deb-src
-# URIs: https://qgis.org/ubuntu-ltr
-# Suites: $(lsb_release -cs)
-# Architectures: amd64
-# Components: main
-# Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg
-
-sudo vim /etc/apt/sources.list.d/qgis.sources
-
-# After that type the commands below to install QGIS:
-
-sudo apt update
-sudo apt install qgis qgis-plugin-grass
-
-# In case you would like to install QGIS Server, type:
-sudo apt install qgis-server --no-install-recommends --no-install-suggests
-# if you want to install server Python plugins
-sudo apt install python3-qgis
-
-
-
-
-sudo apt-get update
-sudo apt-get -y --with-new-pkgs upgrade && \
-  sudo apt-get -y autoremove && \
-  sudo apt-get -y install qgis qgis-plugin-grass saga
-
-# for how to use the qgis-plugin-manager, see https://github.com/3liz/qgis-plugin-manager
-pip3 install qgis-plugin-manager
-# to enable the qgis-plugin-manager, add the corresponding path to PATH
-# ENV PATH="/home/rstudio/.local/bin:$PATH"
-echo "export PATH=\"/home/rstudio/.local/bin:\$PATH\"" >> /etc/profile
-# from the next line onwards we have trouble with the rstudio server, therefore we switch to the rstudio user
-mkdir -p /home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins
-ENV QGIS_PLUGINPATH=/home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins
-echo 'export QGIS_PLUGINPATH=/home/rstudio/.local/share/QGIS/QGIS3/profiles/default/python/plugins' >> /etc/profile
-less /etc/profile
-exit
-qgis-plugin-manager init
-qgis-plugin-manager update
-# install SAGA next generation plugin
-qgis-plugin-manager install 'Processing Saga NextGen Provider'
-Rscript -e "install.packages('remotes')" 
-Rscript -e "remotes::install_github('r-spatial/qgisprocess')" 
+``` bash
+sudo mkdir -m755 -p /etc/apt/keyrings
+sudo wget -O /etc/apt/keyrings/qgis-archive-keyring.gpg https://download.qgis.org/downloads/qgis-archive-keyring.gpg
+sudo tee /etc/apt/sources.list.d/qgis.sources <<EOF
+Types: deb deb-src
+URIs: https://qgis.org/ubuntu-ltr
+Suites: $(lsb_release -cs)
+Architectures: $(dpkg --print-architecture)
+Components: main
+Signed-By: /etc/apt/keyrings/qgis-archive-keyring.gpg
+EOF
+sudo apt update && sudo apt install -y qgis qgis-plugin-grass python3-qgis saga
+Rscript -e "install.packages('qgisprocess')"
 ```
 
 ## Rust
@@ -689,7 +637,9 @@ See the [QGIS manual](https://docs.qgis.org/latest/en/docs/index.html)
 ## Rust command-line utilities
 
 These are some fast and versatile command-line utilities that provide an
-alternitive to standard Unix tools.
+alternitive to standard Unix tools. On Ubuntu 26.04, all of the core
+tools below are available directly via `apt` (`ripgrep 15.1`,
+`fd-find 10.3`, `sd 1.0`, `eza 0.23`, `bat 0.25`, `du-dust 1.2`).
 
 ### ripgrep
 
@@ -698,7 +648,7 @@ current directory for a regex pattern. It is similar to other popular
 search tools like The Silver Searcher, ack, and grep.
 
 ``` bash
-sudo apt install ripgrep
+sudo apt install -y ripgrep
 rg --help
 ```
 
@@ -707,7 +657,7 @@ rg --help
 fd is a simple, fast and user-friendly alternative to find.
 
 ``` bash
-sudo apt install fd-find
+sudo apt install -y fd-find
 fdfind --help
 ```
 
@@ -718,7 +668,7 @@ interface) tool that allows you to perform simple find & replace
 operations on files.
 
 ``` bash
-cargo install sd
+sudo apt install -y sd
 sd --help
 ```
 
@@ -729,7 +679,7 @@ ls (the successor to the now-deprecated exa). It supports colors, file
 icons, git integration, and more.
 
 ``` bash
-cargo install eza
+sudo apt install -y eza
 eza .
 ```
 
@@ -739,7 +689,7 @@ eza .
 highlighting and Git integration.
 
 ``` bash
-sudo apt install bat
+sudo apt install -y bat
 # Note: On Ubuntu, the binary is named 'batcat'. You might want to alias it:
 # alias bat='batcat'
 ```
@@ -750,7 +700,7 @@ dust is a more intuitive version of du in rust. It provides a better way
 to navigate through your system and view disk usage.
 
 ``` bash
-cargo install du-dust
+sudo apt install -y du-dust
 dust --help
 ```
 
@@ -771,26 +721,24 @@ geocomputation in 2026.
 
 ### DuckDB
 
-[DuckDB](https://duckdb.org/) is an in-process SQL OLAP database
-management system. It’s incredibly fast for spatial data analysis when
-used with the [spatial
+[DuckDB](https://duckdb.org/) (**v2.0.0**) is an in-process SQL OLAP
+database management system. It’s incredibly fast for spatial data
+analysis when used with the [spatial
 extension](https://duckdb.org/docs/extensions/spatial).
 
 ``` bash
-curl https://install.duckdb.org | sh
+curl -fsSL https://install.duckdb.org | sh
 ```
 
-### Pixi
+### Pixi and uv
 
-[Pixi](https://pixi.sh/) is a package management tool that allows you to
-install libraries and applications in a reproducible way. It’s built on
-top of the Conda ecosystem but is written in Rust and is significantly
-faster.
+[Pixi](https://pixi.sh/) (**v0.84.1**) and
+[uv](https://docs.astral.sh/uv/) (**0.13.7**) are fast, Rust-powered
+package and environment managers for the Conda and Python ecosystems.
 
 ``` bash
 curl -fsSL https://pixi.sh/install.sh | bash
-# Remember to source your .bashrc or restart your terminal:
-# source ~/.bashrc
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 ## btop
@@ -809,25 +757,20 @@ Install btop:
 
 ``` bash
 sudo apt install btop -y
-# Or for the latest version directly from GitHub:
-# wget https://github.com/aristocratos/btop/releases/download/v1.4.7/btop-x86_64-unknown-linux-musl.tar.gz -O /tmp/btop.tar.gz
-# tar -xzf /tmp/btop.tar.gz -C /tmp
-# sudo cp /tmp/btop/bin/btop /usr/local/bin/
-# sudo mkdir -p /usr/local/share/btop/themes
-# sudo cp -r /tmp/btop/config /usr/local/share/btop/
+# Or for the latest version (v1.4.8) directly from GitHub:
+# wget https://github.com/aristocratos/btop/releases/download/v1.4.8/btop-x86_64-unknown-linux-musl.tar.gz -O /tmp/btop.tar.gz
 ```
 
 Launch with `btop`. Arrow keys to navigate, `q` to quit.
 
 ## CopyQ
 
-[CopyQ](https://github.com/hluk/CopyQ) is an advanced clipboard manager
-with editing and scripting features.
+[CopyQ](https://github.com/hluk/CopyQ) (**v13.0**) is an advanced
+clipboard manager with editing and scripting features, available
+directly in Ubuntu 26.04:
 
 ``` bash
-sudo add-apt-repository ppa:hluk/copyq
-sudo apt update
-sudo apt install copyq
+sudo apt update && sudo apt install -y copyq
 ```
 
 ### Windows+V Shortcut
@@ -864,8 +807,7 @@ Install it from the latest beta release:
 
 ``` bash
 wget https://github.com/TheAssassin/AppImageLauncher/releases/download/v3.0.0-beta-3/appimagelauncher_3.0.0-beta-2-gha287.96cb937_amd64.deb -O /tmp/appimagelauncher.deb
-sudo apt install -y /tmp/appimagelauncher.deb
-rm /tmp/appimagelauncher.deb
+sudo apt install -y /tmp/appimagelauncher.deb && rm /tmp/appimagelauncher.deb
 ```
 
 ## Bambu Studio
@@ -874,27 +816,19 @@ rm /tmp/appimagelauncher.deb
 official slicer for Bambu Lab 3D printers. It is available as an
 AppImage for Linux.
 
-Download and install the latest Ubuntu AppImage from GitHub releases:
+Download and install the latest Ubuntu AppImage (**v02.09.01.70**) from
+GitHub releases:
 
 ``` bash
-# Create Applications directory if it doesn't exist
-mkdir -p ~/Applications
-
-# Download the latest AppImage for Ubuntu 24.04+
-cd ~/Applications
-curl -L -o BambuStudio.AppImage \
-  "https://github.com/bambulab/BambuStudio/releases/download/v02.07.00.55/BambuStudio_ubuntu-24.04-v02.07.00.55-20260514170313.AppImage"
-
-# Make it executable
+mkdir -p ~/Applications && cd ~/Applications
+gh release download -R bambulab/BambuStudio -p "*ubu24*.AppImage" -O BambuStudio.AppImage --clobber
 chmod +x BambuStudio.AppImage
-
-# Run it (AppImage Launcher will integrate it if installed)
 ./BambuStudio.AppImage
 ```
 
-To find the latest release URL, visit the [Bambu Studio GitHub releases
-page](https://github.com/bambulab/BambuStudio/releases) and copy the
-AppImage link for your Ubuntu version.
+To find the latest release URL manually, visit the [Bambu Studio GitHub
+releases page](https://github.com/bambulab/BambuStudio/releases) and
+copy the AppImage link for your Ubuntu version.
 
 ## LogSeq
 
@@ -940,44 +874,18 @@ wget -O - https://raw.githubusercontent.com/laurent22/joplin/dev/Joplin_install_
 ## Zotero
 
 ``` bash
-sudo apt-get install libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
-wget -O zotero.tar.bz2 'https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64'
-tar -xjf zotero.tar.bz2 -C ~/Downloads/
-sudo mv ~/Downloads/Zotero_linux-x86_64 /opt/Zotero
-sudo ln -s /opt/Zotero/zotero /usr/local/bin/
-# Make it appear in launcher:
-#     Run the set_launcher_icon script from a terminal to update the .desktop file for that location. .desktop files require absolute paths for icons, so set_launcher_icon replaces the icon path with the current location of the icon based on where you've placed the directory:
+sudo apt-get install -y libdbus-glib-1-2 libgtk-3-0 libxt6 libxrender1 libx11-xcb1
+wget -O /tmp/zotero.tar.bz2 'https://www.zotero.org/download/client/dl?channel=release&platform=linux-x86_64'
+sudo tar -xjf /tmp/zotero.tar.bz2 -C /opt/ && sudo mv /opt/Zotero_linux-x86_64 /opt/Zotero
+sudo ln -sf /opt/Zotero/zotero /usr/local/bin/zotero
 /opt/Zotero/set_launcher_icon
-#    Symlink zotero.desktop into ~/.local/share/applications/ (e.g., ln -s /opt/zotero/zotero.desktop ~/.local/share/applications/zotero.desktop)
-ln -s /opt/Zotero/zotero.desktop ~/.local/share/applications/zotero.desktop
-
-# Zotero should then appear either in your launcher or in the applications list when you click the grid icon (“Show Applications”), from which you can drag it to the launcher.
-
-# You may need to re-run set_launcher_icon after certain Zotero updates. If something isn't working, it may help to remove the current symlink (~/.local/share/applications/zotero.desktop), wait a few seconds for Zotero to disappear from the launcher, and recreate it. 
+ln -sf /opt/Zotero/zotero.desktop ~/.local/share/applications/zotero.desktop
 ```
 
 Run Zotero with:
 
 ``` bash
 zotero
-```
-
-### Make Zotero available to the launcher
-
-``` bash
-cd /usr/share/applications
-sudo bash -c 'echo "[Desktop Entry]
-Version=1.0
-Name=Zotero
-GenericName=Reference Manager
-Comment=Zotero Reference Manager
-Exec=/opt/Zotero/zotero %U
-Terminal=false
-Type=Application
-Icon=/opt/Zotero/chrome/icons/default/default256.png
-Categories=Office;" > zotero.desktop'
-sudo chmod +x zotero.desktop
-cd -
 ```
 
 ## guake
@@ -1014,11 +922,10 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 a more user-friendly interface. It works great inside Guake.
 
 ``` bash
-# Download and install the latest binary (v0.44.3 as of 2026)
-wget https://github.com/zellij-org/zellij/releases/download/v0.44.3/zellij-x86_64-unknown-linux-musl.tar.gz -O /tmp/zellij.tar.gz
+# Download and install the latest binary (v0.45.1)
+wget https://github.com/zellij-org/zellij/releases/download/v0.45.1/zellij-x86_64-unknown-linux-musl.tar.gz -O /tmp/zellij.tar.gz
 tar -xvf /tmp/zellij.tar.gz -C /tmp
-sudo mv /tmp/zellij /usr/local/bin/
-rm /tmp/zellij.tar.gz
+sudo mv /tmp/zellij /usr/local/bin/ && rm /tmp/zellij.tar.gz
 ```
 
 **Pro Tip: Launch Zellij by default in Guake**
@@ -1071,12 +978,12 @@ Bind `F12` to the command: `kitty +kitten quick-access-terminal`
 
 ## Ghostty
 
-[Ghostty](https://ghostty.org/) is a lightning-fast, GPU-accelerated
-terminal emulator. In 2026, it is often recommended as a modern
-replacement for Guake or standard GNOME Terminal.
+[Ghostty](https://ghostty.org/) (**v1.3.0**) is a lightning-fast,
+GPU-accelerated terminal emulator. On Ubuntu 26.04, it is available
+directly in the official `universe` repository:
 
 ``` bash
-sudo snap install ghostty --classic
+sudo apt update && sudo apt install -y ghostty
 ```
 
 **Pro Tip: Launch Ghostty with a shortcut**
@@ -1130,7 +1037,7 @@ quit-after-last-window-closed = false
 ## Deno
 
 ``` bash
-# The official install script redirects to the latest release
+# The official install script redirects to the latest release (v2.9.8)
 curl -fsSL https://deno.land/install.sh | sh
 ```
 
@@ -1141,7 +1048,7 @@ recommended way to install Node.js. It allows you to install and switch
 between different versions of Node.js easily.
 
 ``` bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.41.0/install.sh | bash
 # Remember to source your .bashrc or restart your terminal:
 # source ~/.bashrc
 # Then install the latest version of Node.js:
@@ -1157,11 +1064,12 @@ npm install -g @anthropic-ai/claude-code
 ## Hermes Desktop
 
 One-liner to install the latest [Hermes
-Desktop](https://github.com/fathah/hermes-desktop) from GitHub releases:
+Desktop](https://github.com/fathah/hermes-desktop) (**v0.7.7**) from
+GitHub releases:
 
 ``` bash
 # Install Hermes Desktop GUI
-wget -q https://github.com/fathah/hermes-desktop/releases/download/v0.5.1/hermes-desktop_0.5.1_amd64.deb -O /tmp/hermes-desktop.deb && sudo dpkg -i /tmp/hermes-desktop.deb
+wget -q https://github.com/fathah/hermes-desktop/releases/download/v0.7.7/hermes-desktop_0.7.7_amd64.deb -O /tmp/hermes-desktop.deb && sudo apt install -y /tmp/hermes-desktop.deb && rm /tmp/hermes-desktop.deb
 
 # Install Hermes Agent CLI
 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
@@ -1333,17 +1241,12 @@ daemon for auto-sync.
 
 ``` bash
 # Download and install the .deb package
-# Check for latest version at https://www.dropbox.com/install-linux
-DROPBOX_VER="2024.04.17"
+# Check for latest version at https://linux.dropbox.com/packages/ubuntu/
+DROPBOX_VER="2026.09.28"
 wget "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_${DROPBOX_VER}_amd64.deb" -O /tmp/dropbox.deb
-sudo dpkg -i /tmp/dropbox.deb
-sudo apt install -f -y  # Fix any missing dependencies
+sudo apt install -y /tmp/dropbox.deb python3-gpg && rm /tmp/dropbox.deb
 
-# gpg signature support:
-sudo apt install python3-gpg
-
-# Install the actual sync daemon (this will download the latest daemon)
-# If you are in a terminal, it will provide a link to authenticate
+# Install and start the actual sync daemon (provides a link to authenticate)
 dropbox start -i
 ```
 
@@ -1418,8 +1321,7 @@ sudo apt install simplescreenrecorder
 Download discord from https://discord.com/download and install it with:
 
 ``` bash
-sudo apt install libgconf-2-4 libc++1
-sudo dpkg -i discord.deb
+sudo apt install -y ./discord.deb
 ```
 
 ## Slack
@@ -1436,33 +1338,22 @@ sudo snap install telegram-desktop
 
 ## OneDrive
 
-https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md
-
-``` bash
-rm -rf /var/lib/dpkg/lock-frontend
-rm -rf /var/lib/dpkg/lock
-apt-get update
-apt-get upgrade -y
-apt-get dist-upgrade -y
-apt-get autoremove -y
-apt-get autoclean -y
-```
-
-https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md#distribution-ubuntu-2404
+Ubuntu 26.04 includes `onedrive` (**v2.5.10**) in `universe`
+(`sudo apt install -y onedrive`), or you can install the latest build
+from the [OpenSUSE Build Service repository for Ubuntu
+26.04](https://github.com/abraunegg/onedrive/blob/master/docs/ubuntu-package-install.md):
 
 ``` bash
 wget -qO - https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_26.04/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/obs-onedrive.gpg > /dev/null
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/obs-onedrive.gpg] https://download.opensuse.org/repositories/home:/npreining:/debian-ubuntu-onedrive/xUbuntu_26.04/ ./" | sudo tee /etc/apt/sources.list.d/onedrive.list
-sudo apt-get update
-sudo apt install --no-install-recommends --no-install-suggests onedrive
+sudo apt-get update && sudo apt install -y --no-install-recommends --no-install-suggests onedrive
 ```
 
 ## OnlyOffice
 
 ``` bash
-sudo apt install gdebi
-wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
-sudo dpkg -i onlyoffice-desktopeditors_amd64.deb
+wget https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb -O /tmp/onlyoffice.deb
+sudo apt install -y /tmp/onlyoffice.deb && rm /tmp/onlyoffice.deb
 ```
 
 ## Google Antigravity IDE
